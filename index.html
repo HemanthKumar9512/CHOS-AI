@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHOS-AI Hospital Management System</title>
+    <style>
+        /* ========================================
+           GLOBAL STYLES
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a8673;
+            --secondary-color: #f39c12;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --border-color: #ecf0f1;
+            --font-sm: 12px;
+            --font-base: 14px;
+            --font-md: 16px;
+            --font-lg: 18px;
+            --font-xl: 24px;
+            --font-2xl: 32px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --box-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: var(--font-base);
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+
+        h1 { font-size: var(--font-2xl); }
+        h2 { font-size: var(--font-xl); }
+        h3 { font-size: var(--font-lg); }
+
+        p { margin-bottom: var(--spacing-md); }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a:hover { color: var(--secondary-color); }
+
+        /* ========================================
+           BUTTONS
+           ======================================== */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #156c5a;
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-block { width: 100%; }
+        .btn-sm {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: var(--font-sm);
+        }
+
+        /* ========================================
+           FORMS
+           ======================================== */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-base);
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 134, 115, 0.1);
+        }
+
+        /* ========================================
+           CARDS
+           ======================================== */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card-header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .card-header h2 {
+            margin: 0;
+        }
+
+        .card-body {
+            padding: var(--spacing-md) 0;
+        }
+
+        /* ========================================
+           ALERTS
+           ======================================== */
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+            border-left: 4px solid;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border-left-color: #27ae60;
+        }
+
+        .alert-danger {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border-left-color: #e74c3c;
+        }
+
+        /* ========================================
+           HEADER/NAVBAR
+           ======================================== */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: none;
+        }
+
+        .header.show {
+            display: block;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .header-logo h1 {
+            margin: 0;
+            color: white;
+            font-size: var(--font-xl);
+        }
+
+        .header-logo a {
+            color: white;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex: 1;
+        }
+
+        .header-nav a {
+            color: white;
+            cursor: pointer;
+        }
+
+        .header-user {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 600;
+        }
+
+        /* ========================================
+           AUTH CONTAINER
+           ======================================== */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a8673 0%, #2ecc71 100%);
+            padding: var(--spacing-md);
+        }
+
+        .auth-box {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-lg);
+            padding: var(--spacing-xl);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-lg);
+        }
+
+        .auth-header h1 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ========================================
+           MAIN CONTENT
+           ======================================== */
+        .main-content {
+            display: none;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .main-content.show {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* ========================================
+           WELCOME SECTION
+           ======================================== */
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #156c5a 100%);
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .welcome-section h1 {
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+
+        .welcome-section p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* ========================================
+           QUICK ACTIONS
+           ======================================== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .action-btn {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            background-color: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--box-shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .action-icon {
+            font-size: 32px;
+            min-width: 40px;
+        }
+
+        .action-btn h3 {
+            margin: 0 0 var(--spacing-xs) 0;
+            color: var(--primary-color);
+        }
+
+        .action-btn p {
+            margin: 0;
+            font-size: var(--font-sm);
+        }
+
+        /* ========================================
+           STATS GRID
+           ======================================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #156c5a 100%);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 var(--spacing-md) 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: var(--font-base);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* ========================================
+           BEDS GRID
+           ======================================== */
+        .beds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .bed-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            border-left: 5px solid var(--border-color);
+        }
+
+        .bed-card.available {
+            border-left-color: var(--success-color);
+        }
+
+        .bed-card.occupied {
+            border-left-color: var(--danger-color);
+        }
+
+        .bed-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #156c5a 100%);
+            color: white;
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bed-header h3 {
+            margin: 0;
+        }
+
+        .status-badge {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius);
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-badge.available {
+            background-color: var(--success-color);
+        }
+
+        .status-badge.occupied {
+            background-color: var(--danger-color);
+        }
+
+        .bed-details {
+            padding: var(--spacing-lg);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--font-sm);
+        }
+
+        .detail-row .label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* ========================================
+           APPOINTMENTS
+           ======================================== */
+        .appointment-preview {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+            background-color: var(--light-bg);
+        }
+
+        .appointment-preview h4 {
+            margin: 0 0 var(--spacing-xs) 0;
+        }
+
+        .appointment-preview p {
+            margin: var(--spacing-xs) 0;
+            font-size: var(--font-sm);
+        }
+
+        /* ========================================
+           AI DASHBOARD
+           ======================================== */
+        .tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--border-color);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-md);
+        }
+
+        .tab-btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: var(--font-base);
+            font-weight: 600;
+            color: var(--dark-text);
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.show {
+            display: block;
+        }
+
+        /* ========================================
+           TABLE STYLES
+           ======================================== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        table th {
+            background-color: var(--light-bg);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tr:hover {
+            background-color: var(--light-bg);
+        }
+
+        /* ========================================
+           UTILITY CLASSES
+           ======================================== */
+        .mt-1 { margin-top: var(--spacing-sm); }
+        .mt-2 { margin-top: var(--spacing-md); }
+        .mt-3 { margin-top: var(--spacing-lg); }
+        .mb-1 { margin-bottom: var(--spacing-sm); }
+        .mb-2 { margin-bottom: var(--spacing-md); }
+        .mb-3 { margin-bottom: var(--spacing-lg); }
+        .p-2 { padding: var(--spacing-md); }
+        .p-3 { padding: var(--spacing-lg); }
+
+        .text-center { text-align: center; }
+
+        .loading {
+            text-align: center;
+            padding: var(--spacing-xl);
+            font-size: var(--font-lg);
+            color: var(--primary-color);
+        }
+
+        .hidden { display: none !important; }
+
+        .progress-bar {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-top: var(--spacing-md);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: white;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+
+            .header-nav {
+                order: 3;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .beds-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <div class="header-logo">
+                <h1>🏥 CHOS-AI</h1>
+            </div>
+            <nav class="header-nav" id="headerNav"></nav>
+            <div class="header-user">
+                <span class="user-name" id="userName"></span>
+                <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Pages -->
+    <div id="loginPage" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>🏥 CHOS-AI</h1>
+                <p>Hospital Management System</p>
+            </div>
+            <h2>Login</h2>
+            <div id="loginError" class="alert alert-danger"></div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a onclick="showRegister()">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="registerPage" class="auth-container hidden">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>🏥 CHOS-AI</h1>
+                <p>Hospital Management System</p>
+            </div>
+            <h2>Create Account</h2>
+            <div id="registerError" class="alert alert-danger"></div>
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="registerName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <select id="registerRole" required>
+                        <option value="PATIENT">Patient</option>
+                        <option value="DOCTOR">Doctor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="registerPhone" placeholder="9876543210">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" placeholder="At least 6 characters" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="registerConfirm" placeholder="Confirm password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a onclick="showLogin()">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="container">
+            <!-- Patient Dashboard -->
+            <div id="patientDashboard" class="hidden">
+                <div class="welcome-section">
+                    <h1>Welcome, <span id="patientName"></span>! 👋</h1>
+                    <p>Patient Dashboard</p>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-btn" onclick="showPage('bookAppointment')">
+                        <span class="action-icon">📅</span>
+                        <div>
+                            <h3>Book Appointment</h3>
+                            <p>Schedule a consultation</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('appointments')">
+                        <span class="action-icon">📋</span>
+                        <div>
+                            <h3>My Appointments</h3>
+                            <p>View your bookings</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('profile')">
+                        <span class="action-icon">👤</span>
+                        <div>
+                            <h3>My Profile</h3>
+                            <p>Update medical info</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('beds')">
+                        <span class="action-icon">🛏️</span>
+                        <div>
+                            <h3>Bed Availability</h3>
+                            <p>Check available beds</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('aiDashboard')">
+                        <span class="action-icon">🤖</span>
+                        <div>
+                            <h3>AI Analytics</h3>
+                            <p>View predictions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2>📅 Upcoming Appointments</h2>
+                    </div>
+                    <div class="card-body" id="upcomingAppointments">
+                        <p>No upcoming appointments</p>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2>💡 Health Tips</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Stay hydrated - Drink at least 8 glasses of water daily</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Exercise regularly - Aim for 30 minutes of activity</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Sleep well - Get 7-8 hours of quality sleep</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Eat healthy - Include fruits and vegetables in every meal</li>
+                            <li style="padding: var(--spacing-md); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Regular checkups - Schedule appointments every 6 months</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Dashboard -->
+            <div id="doctorDashboard" class="hidden">
+                <div class="welcome-section">
+                    <h1>Welcome, Dr. <span id="doctorName"></span>! 👨‍⚕️</h1>
+                    <p>Doctor Dashboard</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">📅</span>
+                        <h3>Today's Appointments</h3>
+                        <p class="stat-value" id="todayAppointments">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">👥</span>
+                        <h3>Total Patients</h3>
+                        <p class="stat-value" id="totalPatients">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">✅</span>
+                        <h3>Completed</h3>
+                        <p class="stat-value" id="completedAppointments">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🤖</span>
+                        <h3>AI Analytics</h3>
+                        <p class="stat-value" style="cursor: pointer;" onclick="showPage('aiDashboard')">View →</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-btn" onclick="showPage('appointments')">
+                        <span class="action-icon">📋</span>
+                        <div>
+                            <h3>My Appointments</h3>
+                            <p>View all appointments</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('beds')">
+                        <span class="action-icon">🛏️</span>
+                        <div>
+                            <h3>Bed Management</h3>
+                            <p>Assign/Release beds</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2>📅 Upcoming Appointments</h2>
+                    </div>
+                    <div class="card-body" id="doctorUpcomingAppointments">
+                        <p>No upcoming appointments today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Appointment Page -->
+            <div id="bookAppointment" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📅 Book an Appointment</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="bookAppointmentError" class="alert alert-danger"></div>
+                        <form onsubmit="handleBookAppointment(event)">
+                            <div class="form-group">
+                                <label>Select Doctor</label>
+                                <select id="selectDoctor" required>
+                                    <option value="">-- Choose a doctor --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Appointment Date</label>
+                                <input type="date" id="appointmentDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Appointment Time</label>
+                                <input type="time" id="appointmentTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Reason for Visit</label>
+                                <textarea id="appointmentReason" placeholder="Describe your symptoms" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2>Available Doctors</h2>
+                    </div>
+                    <div class="card-body" id="availableDoctors">
+                        <p>Loading doctors...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointments List Page -->
+            <div id="appointments" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📅 Your Appointments</h2>
+                        <div style="margin-top: var(--spacing-md);">
+                            <button class="btn btn-secondary btn-sm" onclick="filterAppointments('all')">All</button>
+                            <button class="btn btn-secondary btn-sm" onclick="filterAppointments('SCHEDULED')">Scheduled</button>
+                            <button class="btn btn-secondary btn-sm" onclick="filterAppointments('COMPLETED')">Completed</button>
+                            <button class="btn btn-secondary btn-sm" onclick="filterAppointments('CANCELLED')">Cancelled</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="appointmentsList">
+                        <p>No appointments found</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>👤 My Profile</h2>
+                    </div>
+                    <div class="card-body" id="profileContent">
+                        <form onsubmit="handleUpdateProfile(event)">
+                            <div class="form-group">
+                                <label>Blood Type</label>
+                                <input type="text" id="bloodType" placeholder="O+, A-, B+, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label>Allergies</label>
+                                <textarea id="allergies" placeholder="List any known allergies"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Medical History</label>
+                                <textarea id="medicalHistory" placeholder="Chronic conditions, previous surgeries, etc."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Emergency Contact</label>
+                                <input type="tel" id="emergencyContact" placeholder="Phone number">
+                            </div>
+                            <div class="form-group">
+                                <label>Insurance ID</label>
+                                <input type="text" id="insuranceId" placeholder="Insurance policy number">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bed Management Page -->
+            <div id="beds" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🛏️ Bed Management System</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="loadBeds()">🔄 Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-icon">🛏️</span>
+                                <h3>Total Beds</h3>
+                                <p class="stat-value" id="totalBeds">8</p>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-icon">👥</span>
+                                <h3>Occupied</h3>
+                                <p class="stat-value" id="occupiedBeds">1</p>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-icon">✅</span>
+                                <h3>Available</h3>
+                                <p class="stat-value" id="availableBeds">7</p>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-icon">📊</span>
+                                <h3>Occupancy</h3>
+                                <p class="stat-value" id="occupancyRate">12.5%</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--spacing-lg);">
+                            <div class="form-group">
+                                <label>Search:</label>
+                                <input type="text" id="bedSearch" placeholder="Bed number or patient name..." onkeyup="filterBeds()">
+                            </div>
+                            <div class="form-group">
+                                <label>Ward:</label>
+                                <select id="bedWardFilter" onchange="filterBeds()">
+                                    <option value="">All Wards</option>
+                                    <option value="ICU">ICU</option>
+                                    <option value="General Ward">General Ward</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Surgery">Surgery</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="beds-grid" id="bedsGrid">
+                            <p>Loading beds...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Dashboard -->
+            <div id="aiDashboard" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🤖 AI Analytics & Predictions Dashboard</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="loadAIData()">🔄 Refresh Data</button>
+                    </div>
+                    <div class="card-body">
+                        <!-- Tabs -->
+                        <div class="tabs">
+                            <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
+                            <button class="tab-btn" onclick="showTab('admissions')">📈 Admissions</button>
+                            <button class="tab-btn" onclick="showTab('alerts')">🚨 Alerts</button>
+                            <button class="tab-btn" onclick="showTab('readmission')">⚕️ Readmission Risk</button>
+                            <button class="tab-btn" onclick="showTab('departments')">🏢 Departments</button>
+                        </div>
+
+                        <!-- Overview Tab -->
+                        <div id="overviewTab" class="tab-content show">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <span class="stat-icon">👥</span>
+                                    <h3>Total Patients</h3>
+                                    <p class="stat-value">456</p>
+                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Active: 142</p>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon">📊</span>
+                                    <h3>Bed Utilization</h3>
+                                    <p class="stat-value">87%</p>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 87%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon">⏱️</span>
+                                    <h3>Avg Wait Time</h3>
+                                    <p class="stat-value">18 min</p>
+                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Emergency: 35%</p>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon">⭐</span>
+                                    <h3>Patient Satisfaction</h3>
+                                    <p class="stat-value">4.6/5</p>
+                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Based on surveys</p>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon">📈</span>
+                                    <h3>Surgery Success</h3>
+                                    <p class="stat-value">97.2%</p>
+                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Last 30 days</p>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon">🔄</span>
+                                    <h3>Readmission Rate</h3>
+                                    <p class="stat-value">8.5%</p>
+                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">30-day readmissions</p>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h2>🚨 Recent Risk Alerts</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🚨 High Admission Rate Detected</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Predicted 25% increase in admissions for next 3 days</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Activate contingency staffing plan</p>
+                                    </div>
+
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--warning-color); background-color: #fdebd0; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">⚠️ ICU Occupancy Trending High</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">ICU occupancy predicted to reach 85% by tomorrow</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--warning-color); font-weight: 600;">Action: Prepare additional ICU beds</p>
+                                    </div>
+
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🦠 Possible Respiratory Outbreak</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Unusual cluster of respiratory cases detected in pediatrics ward</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Implement isolation protocols. Notify epidemiology team.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admissions Tab -->
+                        <div id="admissionsTab" class="tab-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>📈 7-Day Admission Forecast</h2>
+                                </div>
+                                <div class="card-body">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Day</th>
+                                                <th>Predicted</th>
+                                                <th>Confidence</th>
+                                                <th>Risk Level</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2024-12-10</td>
+                                                <td>Monday</td>
+                                                <td><strong>145</strong></td>
+                                                <td>87%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-11</td>
+                                                <td>Tuesday</td>
+                                                <td><strong>168</strong></td>
+                                                <td>85%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-12</td>
+                                                <td>Wednesday</td>
+                                                <td><strong>178</strong></td>
+                                                <td>82%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-13</td>
+                                                <td>Thursday</td>
+                                                <td><strong>152</strong></td>
+                                                <td>88%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-14</td>
+                                                <td>Friday</td>
+                                                <td><strong>165</strong></td>
+                                                <td>84%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-15</td>
+                                                <td>Saturday</td>
+                                                <td><strong>138</strong></td>
+                                                <td>81%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2024-12-16</td>
+                                                <td>Sunday</td>
+                                                <td><strong>142</strong></td>
+                                                <td>80%</td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerts Tab -->
+                        <div id="alertsTab" class="tab-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>🚨 All Risk Alerts</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🚨 High Admission Rate Detected</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Predicted 25% increase in admissions for next 3 days</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Activate contingency staffing plan</p>
+                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--danger-color); color: white; font-weight: 600; font-size: var(--font-sm);">HIGH</span>
+                                    </div>
+
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--warning-color); background-color: #fdebd0; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">⚠️ ICU Occupancy Trending High</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">ICU occupancy predicted to reach 85% by tomorrow</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--warning-color); font-weight: 600;">Action: Prepare additional ICU beds</p>
+                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--warning-color); color: white; font-weight: 600; font-size: var(--font-sm);">MEDIUM</span>
+                                    </div>
+
+                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius);">
+                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🦠 Possible Respiratory Outbreak</h4>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Unusual cluster of respiratory cases detected in pediatrics ward</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Implement isolation protocols. Notify epidemiology team.</p>
+                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--danger-color); color: white; font-weight: 600; font-size: var(--font-sm);">HIGH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Readmission Tab -->
+                        <div id="readmissionTab" class="tab-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>⚕️ Readmission Risk Assessment</h2>
+                                </div>
+                                <div class="card-body">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Patient ID</th>
+                                                <th>Name</th>
+                                                <th>Risk Score</th>
+                                                <th>Risk Level</th>
+                                                <th>Condition</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>PAT0001</td>
+                                                <td>Patient 1</td>
+                                                <td><strong>78%</strong></td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fadbd8; color: #e74c3c; font-weight: 600;">HIGH</span></td>
+                                                <td>Hypertension</td>
+                                            </tr>
+                                            <tr>
+                                                <td>PAT0002</td>
+                                                <td>Patient 2</td>
+                                                <td><strong>65%</strong></td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                                                <td>Diabetes</td>
+                                            </tr>
+                                            <tr>
+                                                <td>PAT0003</td>
+                                                <td>Patient 3</td>
+                                                <td><strong>42%</strong></td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                                                <td>COPD</td>
+                                            </tr>
+                                            <tr>
+                                                <td>PAT0004</td>
+                                                <td>Patient 4</td>
+                                                <td><strong>72%</strong></td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fadbd8; color: #e74c3c; font-weight: 600;">HIGH</span></td>
+                                                <td>Heart Disease</td>
+                                            </tr>
+                                            <tr>
+                                                <td>PAT0005</td>
+                                                <td>Patient 5</td>
+                                                <td><strong>58%</strong></td>
+                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                                                <td>Post-Surgery</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Departments Tab -->
+                        <div id="departmentsTab" class="tab-content">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Cardiology</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 45 | Success: 96%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.7/5</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Neurology</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 32 | Success: 94%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.5/5</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Orthopedics</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 58 | Success: 98%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.8/5</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Pediatrics</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 67 | Success: 99%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.9/5</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Surgery</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 41 | Success: 97%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.7/5</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="margin-top: 0;">Internal Medicine</h3>
+                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 73 | Success: 93%</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.4/5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ========================================
+        // APPLICATION STATE
+        // ========================================
+        let appState = {
+            currentUser: null,
+            isLoggedIn: false,
+            currentPage: null,
+            appointments: [],
+            doctors: [],
+            beds: [],
+            allBeds: []
+        };
+
+        // Mock Doctors Data
+        const mockDoctors = [
+            { id: 1, name: 'Dr. Priya Patel', specialization: 'Cardiology', experience_years: 8, consultation_fee: 500 },
+            { id: 2, name: 'Dr. Rajesh Verma', specialization: 'Neurology', experience_years: 12, consultation_fee: 600 },
+            { id: 3, name: 'Dr. Anjali Singh', specialization: 'Pediatrics', experience_years: 7, consultation_fee: 400 },
+            { id: 4, name: 'Dr. Vikram Kumar', specialization: 'Surgery', experience_years: 15, consultation_fee: 700 },
+            { id: 5, name: 'Dr. Neha Gupta', specialization: 'Orthopedics', experience_years: 6, consultation_fee: 450 },
+        ];
+
+        // Mock Beds Data
+        const mockBeds = [
+            { id: 1, bed_number: 'ICU-101', ward: 'ICU', bed_type: 'ICU', priority: 'Critical', status: 'AVAILABLE' },
+            { id: 2, bed_number: 'ICU-102', ward: 'ICU', bed_type: 'ICU', priority: 'Critical', status: 'AVAILABLE' },
+            { id: 3, bed_number: 'GW-201', ward: 'General Ward', bed_type: 'Standard', priority: 'Standard', status: 'AVAILABLE' },
+            { id: 4, bed_number: 'GW-202', ward: 'General Ward', bed_type: 'Standard', priority: 'Standard', status: 'OCCUPIED', patient_name: 'Priya Sharma' },
+            { id: 5, bed_number: 'PED-301', ward: 'Pediatrics', bed_type: 'Pediatric', priority: 'Standard', status: 'AVAILABLE' },
+            { id: 6, bed_number: 'CARD-401', ward: 'Cardiology', bed_type: 'Standard', priority: 'High', status: 'AVAILABLE' },
+            { id: 7, bed_number: 'SURG-501', ward: 'Surgery', bed_type: 'Post-Op', priority: 'High', status: 'AVAILABLE' },
+            { id: 8, bed_number: 'ORTHO-601', ward: 'Orthopedics', bed_type: 'Standard', priority: 'Standard', status: 'AVAILABLE' },
+        ];
+
+        // ========================================
+        // AUTH FUNCTIONS
+        // ========================================
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Mock authentication
+            const user = {
+                id: Math.floor(Math.random() * 1000),
+                name: email.split('@')[0],
+                email: email,
+                role: email.includes('doctor') ? 'DOCTOR' : 'PATIENT'
+            };
+
+            appState.currentUser = user;
+            appState.isLoggedIn = true;
+            localStorage.setItem('user', JSON.stringify(user));
+
+            showMainContent();
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('registerRole').value;
+
+            if (password !== document.getElementById('registerConfirm').value) {
+                document.getElementById('registerError').textContent = '❌ Passwords do not match';
+                document.getElementById('registerError').classList.add('show');
+                return;
+            }
+
+            const user = {
+                id: Math.floor(Math.random() * 1000),
+                name: name,
+                email: email,
+                role: role
+            };
+
+            appState.currentUser = user;
+            appState.isLoggedIn = true;
+            localStorage.setItem('user', JSON.stringify(user));
+
+            showMainContent();
+        }
+
+        function logout() {
+            appState.currentUser = null;
+            appState.isLoggedIn = false;
+            localStorage.removeItem('user');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('header').classList.remove('show');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+        }
+
+        // ========================================
+        // PAGE NAVIGATION
+        // ========================================
+        function showMainContent() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('mainContent').classList.add('show');
+            document.getElementById('header').classList.add('show');
+
+            // Update header
+            document.getElementById('userName').textContent = appState.currentUser.name;
+
+            // Update header nav
+            const headerNav = document.getElementById('headerNav');
+            headerNav.innerHTML = '';
+            if (appState.currentUser.role === 'PATIENT') {
+                headerNav.innerHTML = `
+                    <a onclick="showPage('patientDashboard')">Dashboard</a>
+                    <a onclick="showPage('bookAppointment')">Book Appointment</a>
+                    <a onclick="showPage('appointments')">My Appointments</a>
+                    <a onclick="showPage('profile')">My Profile</a>
+                    <a onclick="showPage('beds')">Bed Availability</a>
+                `;
+                showPage('patientDashboard');
+            } else if (appState.currentUser.role === 'DOCTOR') {
+                headerNav.innerHTML = `
+                    <a onclick="showPage('doctorDashboard')">Dashboard</a>
+                    <a onclick="showPage('appointments')">My Appointments</a>
+                    <a onclick="showPage('beds')">Bed Management</a>
+                `;
+                showPage('doctorDashboard');
+            }
+        }
+
+        function showPage(pageName) {
+            // Hide all pages
+            const pages = [
+                'patientDashboard', 'doctorDashboard', 'bookAppointment', 
+                'appointments', 'profile', 'beds', 'aiDashboard'
+            ];
+            pages.forEach(page => {
+                document.getElementById(page).classList.add('hidden');
+            });
+
+            // Show selected page
+            document.getElementById(pageName).classList.remove('hidden');
+            appState.currentPage = pageName;
+
+            // Load data
+            if (pageName === 'patientDashboard') {
+                document.getElementById('patientName').textContent = appState.currentUser.name;
+                loadAppointments();
+            } else if (pageName === 'doctorDashboard') {
+                document.getElementById('doctorName').textContent = appState.currentUser.name;
+                loadDoctorStats();
+            } else if (pageName === 'bookAppointment') {
+                loadDoctors();
+            } else if (pageName === 'appointments') {
+                loadAppointments();
+            } else if (pageName === 'beds') {
+                loadBeds();
+            } else if (pageName === 'aiDashboard') {
+                loadAIData();
+            }
+        }
+
+        // ========================================
+        // DATA LOADING
+        // ========================================
+        function loadDoctors() {
+            appState.doctors = mockDoctors;
+            const selectDoctor = document.getElementById('selectDoctor');
+            selectDoctor.innerHTML = '<option value="">-- Choose a doctor --</option>';
+            mockDoctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.id;
+                option.textContent = `Dr. ${doctor.name} - ${doctor.specialization}`;
+                selectDoctor.appendChild(option);
+            });
+
+            // Show available doctors
+            const availableDoctors = document.getElementById('availableDoctors');
+            availableDoctors.innerHTML = '';
+            mockDoctors.forEach(doctor => {
+                const doctorCard = document.createElement('div');
+                doctorCard.style.cssText = 'background-color: var(--light-bg); border-left: 4px solid var(--primary-color); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); border-radius: var(--border-radius); transition: transform 0.3s ease;';
+                doctorCard.innerHTML = `
+                    <h4 style="margin: 0 0 var(--spacing-sm) 0; color: var(--primary-color);">Dr. ${doctor.name}</h4>
+                    <p style="margin: 0; font-size: var(--font-sm);"><strong>Specialization:</strong> ${doctor.specialization}</p>
+                    <p style="margin: 0; font-size: var(--font-sm);"><strong>Experience:</strong> ${doctor.experience_years} years</p>
+                    <p style="margin: 0; font-size: var(--font-sm);"><strong>Consultation Fee:</strong> ₹${doctor.consultation_fee}</p>
+                `;
+                availableDoctors.appendChild(doctorCard);
+            });
+        }
+
+        function loadAppointments() {
+            // Generate mock appointments
+            appState.appointments = [
+                { id: 1, doctor_name: 'Dr. Priya Patel', patient_name: appState.currentUser.name, appointment_date: '2024-12-20 14:30:00', status: 'SCHEDULED', reason: 'Regular checkup' },
+                { id: 2, doctor_name: 'Dr. Rajesh Verma', patient_name: appState.currentUser.name, appointment_date: '2024-12-22 10:00:00', status: 'SCHEDULED', reason: 'Consultation' },
+            ];
+
+            const appointmentsList = document.getElementById('appointmentsList');
+            appointmentsList.innerHTML = '';
+
+            if (appState.appointments.length === 0) {
+                appointmentsList.innerHTML = '<p>No appointments found</p>';
+            } else {
+                appState.appointments.forEach(apt => {
+                    const aptDiv = document.createElement('div');
+                    aptDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-md); background-color: var(--light-bg);';
+                    aptDiv.innerHTML = `
+                        <div>
+                            <h4 style="margin: 0 0 var(--spacing-xs) 0;">${apt.doctor_name}</h4>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${new Date(apt.appointment_date).toLocaleString()}</p>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.reason}</p>
+                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; background-color: #27ae60; color: white; font-weight: 600; font-size: var(--font-sm);">${apt.status}</span>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">Cancel</button>
+                    `;
+                    appointmentsList.appendChild(aptDiv);
+                });
+            }
+
+            // Update doctor dashboard stats
+            if (document.getElementById('doctorUpcomingAppointments')) {
+                const doctorUpcomingAppointments = document.getElementById('doctorUpcomingAppointments');
+                doctorUpcomingAppointments.innerHTML = '';
+                appState.appointments.filter(apt => apt.status === 'SCHEDULED').forEach(apt => {
+                    const aptDiv = document.createElement('div');
+                    aptDiv.className = 'appointment-preview';
+                    aptDiv.innerHTML = `
+                        <div>
+                            <h4>${apt.patient_name}</h4>
+                            <p>${new Date(apt.appointment_date).toLocaleString()}</p>
+                            <p>${apt.reason}</p>
+                        </div>
+                    `;
+                    doctorUpcomingAppointments.appendChild(aptDiv);
+                });
+                if (appState.appointments.filter(apt => apt.status === 'SCHEDULED').length === 0) {
+                    doctorUpcomingAppointments.innerHTML = '<p>No upcoming appointments today</p>';
+                }
+            }
+
+            // Update patient dashboard
+            if (document.getElementById('upcomingAppointments')) {
+                const upcomingAppointments = document.getElementById('upcomingAppointments');
+                upcomingAppointments.innerHTML = '';
+                appState.appointments.filter(apt => apt.status === 'SCHEDULED').forEach(apt => {
+                    const aptDiv = document.createElement('div');
+                    aptDiv.className = 'appointment-preview';
+                    aptDiv.innerHTML = `
+                        <div>
+                            <h4>${apt.doctor_name}</h4>
+                            <p>${new Date(apt.appointment_date).toLocaleString()}</p>
+                            <p>${apt.reason}</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="showPage('appointments')">View Details</button>
+                    `;
+                    upcomingAppointments.appendChild(aptDiv);
+                });
+                if (appState.appointments.filter(apt => apt.status === 'SCHEDULED').length === 0) {
+                    upcomingAppointments.innerHTML = '<p>No upcoming appointments. <a onclick="showPage(\'bookAppointment\')">Book one now!</a></p>';
+                }
+            }
+        }
+
+        function loadBeds() {
+            appState.allBeds = mockBeds;
+            appState.beds = mockBeds;
+
+            const totalBeds = mockBeds.length;
+            const occupiedBeds = mockBeds.filter(b => b.status === 'OCCUPIED').length;
+            const availableBeds = mockBeds.filter(b => b.status === 'AVAILABLE').length;
+            const occupancyRate = totalBeds ? (occupiedBeds / totalBeds * 100).toFixed(1) : 0;
+
+            document.getElementById('totalBeds').textContent = totalBeds;
+            document.getElementById('occupiedBeds').textContent = occupiedBeds;
+            document.getElementById('availableBeds').textContent = availableBeds;
+            document.getElementById('occupancyRate').textContent = occupancyRate + '%';
+
+            displayBeds(mockBeds);
+        }
+
+        function displayBeds(beds) {
+            const bedsGrid = document.getElementById('bedsGrid');
+            bedsGrid.innerHTML = '';
+
+            if (beds.length === 0) {
+                bedsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: var(--spacing-xl);"><p>No beds found</p></div>';
+            } else {
+                beds.forEach(bed => {
+                    const bedCard = document.createElement('div');
+                    bedCard.className = `bed-card ${bed.status.toLowerCase()}`;
+                    bedCard.innerHTML = `
+                        <div class="bed-header">
+                            <h3>Bed ${bed.bed_number}</h3>
+                            <span class="status-badge ${bed.status.toLowerCase()}">${bed.status}</span>
+                        </div>
+                        <div class="bed-details">
+                            <div class="detail-row">
+                                <span class="label">Ward:</span>
+                                <span>${bed.ward}</span>
+                            </div>
+                            ${bed.patient_name ? `
+                                <div class="detail-row">
+                                    <span class="label">Patient:</span>
+                                    <span>${bed.patient_name}</span>
+                                </div>
+                            ` : ''}
+                            <div class="detail-row">
+                                <span class="label">Priority:</span>
+                                <span style="padding: 4px 8px; border-radius: 4px; font-weight: 600; ${bed.priority === 'Critical' ? 'background-color: #fee; color: var(--danger-color);' : 'background-color: #efe; color: var(--success-color);'}">${bed.priority}</span>
+                            </div>
+                        </div>
+                        <div style="padding: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; gap: var(--spacing-md);">
+                            <button class="btn btn-secondary btn-sm" onclick="alert('Bed details for ${bed.bed_number}')">View Details</button>
+                        </div>
+                    `;
+                    bedsGrid.appendChild(bedCard);
+                });
+            }
+        }
+
+        function filterBeds() {
+            const searchTerm = document.getElementById('bedSearch').value.toLowerCase();
+            const wardFilter = document.getElementById('bedWardFilter').value;
+
+            let filtered = appState.allBeds.filter(bed => {
+                const matchesSearch = !searchTerm || bed.bed_number.toLowerCase().includes(searchTerm) || (bed.patient_name && bed.patient_name.toLowerCase().includes(searchTerm));
+                const matchesWard = !wardFilter || bed.ward === wardFilter;
+                return matchesSearch && matchesWard;
+            });
+
+            displayBeds(filtered);
+        }
+
+        function loadDoctorStats() {
+            const totalPatients = 5;
+            document.getElementById('totalPatients').textContent = totalPatients;
+            document.getElementById('todayAppointments').textContent = appState.appointments.filter(apt => apt.status === 'SCHEDULED').length;
+            document.getElementById('completedAppointments').textContent = appState.appointments.filter(apt => apt.status === 'COMPLETED').length;
+        }
+
+        function loadAIData() {
+            // AI data is pre-populated in HTML
+        }
+
+        // ========================================
+        // FORM HANDLERS
+        // ========================================
+        function handleBookAppointment(e) {
+            e.preventDefault();
+            const doctorId = document.getElementById('selectDoctor').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('appointmentReason').value;
+
+            if (!doctorId || !appointmentDate || !appointmentTime || !reason) {
+                document.getElementById('bookAppointmentError').textContent = '❌ Please fill all fields';
+                document.getElementById('bookAppointmentError').classList.add('show');
+                return;
+            }
+
+            const doctor = mockDoctors.find(d => d.id == doctorId);
+            const appointment = {
+                id: Math.floor(Math.random() * 1000),
+                doctor_name: `Dr. ${doctor.name}`,
+                patient_name: appState.currentUser.name,
+                appointment_date: `${appointmentDate} ${appointmentTime}:00`,
+                status: 'SCHEDULED',
+                reason: reason
+            };
+
+            appState.appointments.push(appointment);
+            alert('✅ Appointment booked successfully!');
+            document.getElementById('bookAppointmentError').classList.remove('show');
+            document.getElementById('selectDoctor').value = '';
+            document.getElementById('appointmentDate').value = '';
+            document.getElementById('appointmentTime').value = '';
+            document.getElementById('appointmentReason').value = '';
+            showPage('appointments');
+        }
+
+        function handleUpdateProfile(e) {
+            e.preventDefault();
+            alert('✅ Profile updated successfully!');
+        }
+
+        function cancelAppointment(id) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                const apt = appState.appointments.find(a => a.id === id);
+                if (apt) {
+                    apt.status = 'CANCELLED';
+                    alert('✅ Appointment cancelled');
+                    loadAppointments();
+                }
+            }
+        }
+
+        function filterAppointments(status) {
+            const appointmentsList = document.getElementById('appointmentsList');
+            appointmentsList.innerHTML = '';
+
+            let filtered = status === 'all' ? appState.appointments : appState.appointments.filter(apt => apt.status === status);
+
+            if (filtered.length === 0) {
+                appointmentsList.innerHTML = '<p>No appointments found</p>';
+            } else {
+                filtered.forEach(apt => {
+                    const aptDiv = document.createElement('div');
+                    aptDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-md); background-color: var(--light-bg);';
+                    aptDiv.innerHTML = `
+                        <div>
+                            <h4 style="margin: 0 0 var(--spacing-xs) 0;">${apt.doctor_name}</h4>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${new Date(apt.appointment_date).toLocaleString()}</p>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.reason}</p>
+                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; ${apt.status === 'SCHEDULED' ? 'background-color: #3498db; color: white;' : apt.status === 'COMPLETED' ? 'background-color: #27ae60; color: white;' : 'background-color: #e74c3c; color: white;'} font-weight: 600; font-size: var(--font-sm);">${apt.status}</span>
+                        </div>
+                        ${apt.status === 'SCHEDULED' ? `<button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">Cancel</button>` : ''}
+                    `;
+                    appointmentsList.appendChild(aptDiv);
+                });
+            }
+        }
+
+        // ========================================
+        // TAB FUNCTIONS
+        // ========================================
+        function showTab(tabName) {
+            const tabs = ['overviewTab', 'admissionsTab', 'alertsTab', 'readmissionTab', 'departmentsTab'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).classList.remove('show');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('show');
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // ========================================
+        // INITIALIZE APP
+        // ========================================
+        window.addEventListener('load', function() {
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                appState.currentUser = JSON.parse(savedUser);
+                appState.isLoggedIn = true;
+                showMainContent();
+            }
+        });
+    </script>
+</body>
+</html>
