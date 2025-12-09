@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHOS-AI Hospital Management System</title>
+    <title>CHOS-AI Hospital Management System v2.0</title>
     <style>
         /* ========================================
            GLOBAL STYLES
@@ -93,6 +93,12 @@
             box-shadow: var(--box-shadow-lg);
         }
 
+        .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
         .btn-secondary {
             background-color: var(--secondary-color);
             color: white;
@@ -109,6 +115,15 @@
 
         .btn-danger:hover {
             background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
         }
 
         .btn-block { width: 100%; }
@@ -146,6 +161,11 @@
             box-shadow: 0 0 0 3px rgba(26, 134, 115, 0.1);
         }
 
+        input:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+
         /* ========================================
            CARDS
            ======================================== */
@@ -180,10 +200,22 @@
             margin-bottom: var(--spacing-md);
             border-left: 4px solid;
             display: none;
+            animation: slideDown 0.3s ease;
         }
 
         .alert.show {
             display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert-success {
@@ -196,6 +228,18 @@
             background-color: #fadbd8;
             color: #e74c3c;
             border-left-color: #e74c3c;
+        }
+
+        .alert-info {
+            background-color: #d6eaf8;
+            color: #3498db;
+            border-left-color: #3498db;
+        }
+
+        .alert-warning {
+            background-color: #fdebd0;
+            color: #f39c12;
+            border-left-color: #f39c12;
         }
 
         /* ========================================
@@ -239,11 +283,17 @@
             display: flex;
             gap: var(--spacing-lg);
             flex: 1;
+            flex-wrap: wrap;
         }
 
         .header-nav a {
             color: white;
             cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            opacity: 0.8;
         }
 
         .header-user {
@@ -276,6 +326,18 @@
             padding: var(--spacing-xl);
             width: 100%;
             max-width: 500px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-header {
@@ -422,101 +484,237 @@
         }
 
         /* ========================================
-           BEDS GRID
+           APPOINTMENT CARDS
            ======================================== */
-        .beds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .bed-card {
-            background: white;
+        .appointment-card {
+            background-color: white;
+            border: 2px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-            border-left: 5px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.3s ease;
         }
 
-        .bed-card.available {
+        .appointment-card:hover {
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .appointment-card.completed {
             border-left-color: var(--success-color);
         }
 
-        .bed-card.occupied {
+        .appointment-card.cancelled {
             border-left-color: var(--danger-color);
+            opacity: 0.7;
         }
 
-        .bed-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #156c5a 100%);
-            color: white;
-            padding: var(--spacing-lg);
+        .appointment-card.pending {
+            border-left-color: var(--warning-color);
+        }
+
+        .appointment-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
         }
 
-        .bed-header h3 {
+        .appointment-header h4 {
             margin: 0;
+            color: var(--primary-color);
         }
 
         .status-badge {
-            padding: var(--spacing-xs) var(--spacing-md);
+            padding: 4px 12px;
             border-radius: var(--border-radius);
             font-size: var(--font-sm);
             font-weight: 600;
             color: white;
         }
 
-        .status-badge.available {
+        .status-badge.scheduled {
+            background-color: var(--info-color);
+        }
+
+        .status-badge.completed {
             background-color: var(--success-color);
         }
 
-        .status-badge.occupied {
+        .status-badge.cancelled {
             background-color: var(--danger-color);
         }
 
-        .bed-details {
-            padding: var(--spacing-lg);
+        .status-badge.pending {
+            background-color: var(--warning-color);
+        }
+
+        .appointment-details {
+            margin-bottom: var(--spacing-md);
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             padding: var(--spacing-sm) 0;
-            border-bottom: 1px solid var(--border-color);
             font-size: var(--font-sm);
         }
 
-        .detail-row .label {
+        .detail-label {
             font-weight: 600;
             color: var(--primary-color);
         }
 
-        /* ========================================
-           APPOINTMENTS
-           ======================================== */
-        .appointment-preview {
+        .appointment-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-md);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-md);
-            background-color: var(--light-bg);
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
         }
 
-        .appointment-preview h4 {
+        /* ========================================
+           NOTIFICATION BANNER
+           ======================================== */
+        .notification-banner {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success-color);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .notification-banner.warning {
+            background-color: #fff3e0;
+            border-left-color: var(--warning-color);
+        }
+
+        .notification-icon {
+            font-size: 24px;
+        }
+
+        .notification-content h4 {
             margin: 0 0 var(--spacing-xs) 0;
         }
 
-        .appointment-preview p {
-            margin: var(--spacing-xs) 0;
+        .notification-content p {
+            margin: 0;
             font-size: var(--font-sm);
         }
 
         /* ========================================
-           AI DASHBOARD
+           HEALTH METRICS
+           ======================================== */
+        .health-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: var(--font-sm);
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .metric-unit {
+            font-size: var(--font-sm);
+            color: var(--primary-color);
+        }
+
+        /* ========================================
+           MEDICAL RECORDS
+           ======================================== */
+        .medical-record {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .record-date {
+            font-size: var(--font-sm);
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .record-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .record-content {
+            font-size: var(--font-sm);
+            line-height: 1.6;
+            color: var(--dark-text);
+        }
+
+        /* ========================================
+           CALENDAR/SLOTS
+           ======================================== */
+        .slots-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .slot-btn {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            background-color: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .slot-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            background-color: #f0f0f0;
+        }
+
+        .slot-btn.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .slot-btn:disabled {
+            background-color: #f0f0f0;
+            color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* ========================================
+           TABS
            ======================================== */
         .tabs {
             display: flex;
@@ -537,6 +735,7 @@
             color: var(--dark-text);
             border-bottom: 3px solid transparent;
             white-space: nowrap;
+            transition: all 0.3s ease;
         }
 
         .tab-btn:hover {
@@ -557,7 +756,65 @@
         }
 
         /* ========================================
-           TABLE STYLES
+           MODAL
+           ======================================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--dark-text);
+        }
+
+        /* ========================================
+           TABLE
            ======================================== */
         table {
             width: 100%;
@@ -596,6 +853,7 @@
         .p-3 { padding: var(--spacing-lg); }
 
         .text-center { text-align: center; }
+        .text-muted { color: #7f8c8d; }
 
         .loading {
             text-align: center;
@@ -606,18 +864,16 @@
 
         .hidden { display: none !important; }
 
-        .progress-bar {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            height: 8px;
-            margin-top: var(--spacing-md);
-            overflow: hidden;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
         }
 
-        .progress-fill {
-            background-color: white;
-            height: 100%;
-            border-radius: 10px;
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
         }
 
         /* ========================================
@@ -638,18 +894,108 @@
                 grid-template-columns: 1fr;
             }
 
-            .appointment-preview {
+            .appointment-header {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
             }
 
-            .detail-row {
+            .appointment-actions {
                 flex-direction: column;
             }
 
-            .beds-grid {
-                grid-template-columns: 1fr;
+            .appointment-actions .btn {
+                width: 100%;
             }
+
+            .modal-content {
+                width: 90%;
+                padding: var(--spacing-lg);
+            }
+
+            .slots-container {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+
+        /* ========================================
+           PROFILE SECTION ENHANCEMENTS
+           ======================================== */
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .profile-info {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+        }
+
+        .profile-info h3 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--font-sm);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* ========================================
+           AI ANALYTICS ENHANCEMENTS
+           ======================================== */
+        .analytics-access-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            margin-left: var(--spacing-sm);
+        }
+
+        .analytics-access-badge.doctor {
+            background-color: #d6eaf8;
+            color: var(--info-color);
+        }
+
+        .analytics-access-badge.patient {
+            background-color: #d5f4e6;
+            color: var(--success-color);
+        }
+
+        .restricted-content {
+            background-color: #fadbd8;
+            border-left: 4px solid var(--danger-color);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .restricted-content h4 {
+            margin: 0 0 var(--spacing-sm) 0;
+            color: var(--danger-color);
+        }
+
+        .restricted-content p {
+            margin: 0;
+            font-size: var(--font-sm);
         }
     </style>
 </head>
@@ -658,12 +1004,13 @@
     <header class="header" id="header">
         <div class="header-container">
             <div class="header-logo">
-                <h1>🏥 CHOS-AI</h1>
+                <h1>🏥 CHOS-AI v2.0</h1>
             </div>
             <nav class="header-nav" id="headerNav"></nav>
             <div class="header-user">
                 <span class="user-name" id="userName"></span>
-                <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                <span class="user-role" id="userRole" style="color: white; font-size: 12px; margin-left: 8px; background-color: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;"></span>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="margin-left: 16px;">Logout</button>
             </div>
         </div>
     </header>
@@ -672,7 +1019,7 @@
     <div id="loginPage" class="auth-container">
         <div class="auth-box">
             <div class="auth-header">
-                <h1>🏥 CHOS-AI</h1>
+                <h1>🏥 CHOS-AI v2.0</h1>
                 <p>Hospital Management System</p>
             </div>
             <h2>Login</h2>
@@ -697,7 +1044,7 @@
     <div id="registerPage" class="auth-container hidden">
         <div class="auth-box">
             <div class="auth-header">
-                <h1>🏥 CHOS-AI</h1>
+                <h1>🏥 CHOS-AI v2.0</h1>
                 <p>Hospital Management System</p>
             </div>
             <h2>Create Account</h2>
@@ -745,7 +1092,7 @@
             <div id="patientDashboard" class="hidden">
                 <div class="welcome-section">
                     <h1>Welcome, <span id="patientName"></span>! 👋</h1>
-                    <p>Patient Dashboard</p>
+                    <p>Patient Dashboard - Enhanced Hospital Management System</p>
                 </div>
 
                 <div class="quick-actions">
@@ -753,21 +1100,21 @@
                         <span class="action-icon">📅</span>
                         <div>
                             <h3>Book Appointment</h3>
-                            <p>Schedule a consultation</p>
+                            <p>Schedule with doctors</p>
                         </div>
                     </div>
                     <div class="action-btn" onclick="showPage('appointments')">
                         <span class="action-icon">📋</span>
                         <div>
                             <h3>My Appointments</h3>
-                            <p>View your bookings</p>
+                            <p>View & manage bookings</p>
                         </div>
                     </div>
                     <div class="action-btn" onclick="showPage('profile')">
                         <span class="action-icon">👤</span>
                         <div>
                             <h3>My Profile</h3>
-                            <p>Update medical info</p>
+                            <p>Medical records & metrics</p>
                         </div>
                     </div>
                     <div class="action-btn" onclick="showPage('beds')">
@@ -780,18 +1127,18 @@
                     <div class="action-btn" onclick="showPage('aiDashboard')">
                         <span class="action-icon">🤖</span>
                         <div>
-                            <h3>AI Analytics</h3>
-                            <p>View predictions</p>
+                            <h3>AI Insights</h3>
+                            <p>Health predictions</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card mt-3">
                     <div class="card-header">
-                        <h2>📅 Upcoming Appointments</h2>
+                        <h2>🔔 Upcoming Appointments</h2>
                     </div>
                     <div class="card-body" id="upcomingAppointments">
-                        <p>No upcoming appointments</p>
+                        <p>No upcoming appointments. <a onclick="showPage('bookAppointment')">Book one now!</a></p>
                     </div>
                 </div>
 
@@ -801,11 +1148,11 @@
                     </div>
                     <div class="card-body">
                         <ul style="list-style: none; padding: 0;">
-                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Stay hydrated - Drink at least 8 glasses of water daily</li>
-                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Exercise regularly - Aim for 30 minutes of activity</li>
-                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Sleep well - Get 7-8 hours of quality sleep</li>
-                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Eat healthy - Include fruits and vegetables in every meal</li>
-                            <li style="padding: var(--spacing-md); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Regular checkups - Schedule appointments every 6 months</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Stay hydrated - Drink 8 glasses of water daily</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Exercise - 30 minutes of physical activity</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Sleep - 7-8 hours of quality rest</li>
+                            <li style="padding: var(--spacing-md); margin-bottom: var(--spacing-sm); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Nutrition - Include fruits & vegetables</li>
+                            <li style="padding: var(--spacing-md); background-color: var(--light-bg); border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">✅ Checkups - Regular health monitoring</li>
                         </ul>
                     </div>
                 </div>
@@ -815,7 +1162,7 @@
             <div id="doctorDashboard" class="hidden">
                 <div class="welcome-section">
                     <h1>Welcome, Dr. <span id="doctorName"></span>! 👨‍⚕️</h1>
-                    <p>Doctor Dashboard</p>
+                    <p>Doctor Dashboard - Enhanced Management System</p>
                 </div>
 
                 <div class="stats-grid">
@@ -835,9 +1182,9 @@
                         <p class="stat-value" id="completedAppointments">0</p>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-icon">🤖</span>
-                        <h3>AI Analytics</h3>
-                        <p class="stat-value" style="cursor: pointer;" onclick="showPage('aiDashboard')">View →</p>
+                        <span class="stat-icon">⏳</span>
+                        <h3>Pending Uploads</h3>
+                        <p class="stat-value" id="pendingUploads">0</p>
                     </div>
                 </div>
 
@@ -846,7 +1193,7 @@
                         <span class="action-icon">📋</span>
                         <div>
                             <h3>My Appointments</h3>
-                            <p>View all appointments</p>
+                            <p>Manage bookings & reports</p>
                         </div>
                     </div>
                     <div class="action-btn" onclick="showPage('beds')">
@@ -854,6 +1201,13 @@
                         <div>
                             <h3>Bed Management</h3>
                             <p>Assign/Release beds</p>
+                        </div>
+                    </div>
+                    <div class="action-btn" onclick="showPage('aiDashboard')">
+                        <span class="action-icon">🤖</span>
+                        <div>
+                            <h3>AI Analytics</h3>
+                            <p>Doctor-only insights</p>
                         </div>
                     </div>
                 </div>
@@ -868,34 +1222,46 @@
                 </div>
             </div>
 
-            <!-- Book Appointment Page -->
+            <!-- Book Appointment Page (FEATURE 1: SLOT-BASED) -->
             <div id="bookAppointment" class="hidden">
                 <div class="card">
                     <div class="card-header">
-                        <h2>📅 Book an Appointment</h2>
+                        <h2>📅 Book an Appointment - Slot Based</h2>
                     </div>
                     <div class="card-body">
                         <div id="bookAppointmentError" class="alert alert-danger"></div>
+                        <div id="bookAppointmentSuccess" class="alert alert-success"></div>
+
                         <form onsubmit="handleBookAppointment(event)">
                             <div class="form-group">
                                 <label>Select Doctor</label>
-                                <select id="selectDoctor" required>
+                                <select id="selectDoctor" onchange="loadDoctorSlots()" required>
                                     <option value="">-- Choose a doctor --</option>
                                 </select>
                             </div>
+
                             <div class="form-group">
-                                <label>Appointment Date</label>
-                                <input type="date" id="appointmentDate" required>
+                                <label>🗓️ Select Date (Within 15 Days)</label>
+                                <input type="date" id="appointmentDate" onchange="loadDoctorSlots()" required>
                             </div>
+
                             <div class="form-group">
-                                <label>Appointment Time</label>
-                                <input type="time" id="appointmentTime" required>
+                                <label>⏰ Available Slots for Selected Doctor</label>
+                                <div class="slots-container" id="slotsContainer">
+                                    <p style="grid-column: 1/-1; text-align: center;">Select a doctor and date first</p>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label>Reason for Visit</label>
-                                <textarea id="appointmentReason" placeholder="Describe your symptoms" required></textarea>
+                                <textarea id="appointmentReason" placeholder="Describe your symptoms or reason for visit" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+
+                            <div class="alert alert-info">
+                                <strong>ℹ️ Note:</strong> Appointment slots are fixed by your doctor based on their availability. You cannot select custom time. Time is locked once booked.
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
                         </form>
                     </div>
                 </div>
@@ -910,12 +1276,12 @@
                 </div>
             </div>
 
-            <!-- Appointments List Page -->
+            <!-- Appointments List Page (FEATURE 2: ENHANCED) -->
             <div id="appointments" class="hidden">
                 <div class="card">
                     <div class="card-header">
                         <h2>📅 Your Appointments</h2>
-                        <div style="margin-top: var(--spacing-md);">
+                        <div style="margin-top: var(--spacing-md); display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
                             <button class="btn btn-secondary btn-sm" onclick="filterAppointments('all')">All</button>
                             <button class="btn btn-secondary btn-sm" onclick="filterAppointments('SCHEDULED')">Scheduled</button>
                             <button class="btn btn-secondary btn-sm" onclick="filterAppointments('COMPLETED')">Completed</button>
@@ -928,36 +1294,132 @@
                 </div>
             </div>
 
-            <!-- Profile Page -->
+            <!-- Profile Page (FEATURE 3: ENHANCED WITH HEALTH METRICS) -->
             <div id="profile" class="hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>👤 My Profile</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showProfileTab('medical-info')">Medical Info</button>
+                    <button class="tab-btn" onclick="showProfileTab('health-metrics')">Health Metrics</button>
+                    <button class="tab-btn" onclick="showProfileTab('medical-records')">Medical History</button>
+                </div>
+
+                <!-- Medical Info Tab -->
+                <div id="medical-info-tab" class="tab-content show">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📋 Medical Information</h2>
+                        </div>
+                        <div class="card-body">
+                            <form onsubmit="handleUpdateProfile(event)">
+                                <div class="grid-2">
+                                    <div class="form-group">
+                                        <label>Blood Type</label>
+                                        <input type="text" id="bloodType" placeholder="O+, A-, B+, AB+">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Height (cm)</label>
+                                        <input type="number" id="height" placeholder="170">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Weight (kg)</label>
+                                        <input type="number" id="weight" placeholder="70">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Emergency Contact</label>
+                                        <input type="tel" id="emergencyContact" placeholder="Phone number">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Known Allergies</label>
+                                    <textarea id="allergies" placeholder="List any known allergies (e.g., Penicillin, Peanuts)"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Chronic Conditions/Medical History</label>
+                                    <textarea id="medicalHistory" placeholder="Chronic diseases, previous surgeries, current medications"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Insurance ID</label>
+                                    <input type="text" id="insuranceId" placeholder="Insurance policy number">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Save Medical Information</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body" id="profileContent">
-                        <form onsubmit="handleUpdateProfile(event)">
-                            <div class="form-group">
-                                <label>Blood Type</label>
-                                <input type="text" id="bloodType" placeholder="O+, A-, B+, etc.">
+                </div>
+
+                <!-- Health Metrics Tab -->
+                <div id="health-metrics-tab" class="tab-content hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>💓 Health Metrics</h2>
+                        </div>
+                        <div class="card-body">
+                            <form onsubmit="handleUpdateHealthMetrics(event)">
+                                <div class="health-metrics">
+                                    <div class="metric-card">
+                                        <div class="metric-label">Blood Pressure</div>
+                                        <input type="text" id="bloodPressure" placeholder="120/80" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">mmHg</div>
+                                    </div>
+
+                                    <div class="metric-card">
+                                        <div class="metric-label">Heart Rate</div>
+                                        <input type="number" id="heartRate" placeholder="72" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">bpm</div>
+                                    </div>
+
+                                    <div class="metric-card">
+                                        <div class="metric-label">BMI</div>
+                                        <input type="number" id="bmi" placeholder="24.2" step="0.1" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">kg/m²</div>
+                                    </div>
+
+                                    <div class="metric-card">
+                                        <div class="metric-label">Temperature</div>
+                                        <input type="number" id="temperature" placeholder="37" step="0.1" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">°C</div>
+                                    </div>
+
+                                    <div class="metric-card">
+                                        <div class="metric-label">Glucose Level</div>
+                                        <input type="number" id="glucose" placeholder="100" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">mg/dL</div>
+                                    </div>
+
+                                    <div class="metric-card">
+                                        <div class="metric-label">Oxygen Saturation</div>
+                                        <input type="number" id="oxygenSat" placeholder="98" style="text-align: center; font-weight: bold; margin-bottom: var(--spacing-md);">
+                                        <div class="metric-unit">%</div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block mt-3">Update Health Metrics</button>
+                            </form>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h3>📊 Current Health Status</h3>
+                                </div>
+                                <div class="card-body" id="healthStatus">
+                                    <p>No metrics recorded yet. Add your metrics above.</p>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Allergies</label>
-                                <textarea id="allergies" placeholder="List any known allergies"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Medical History</label>
-                                <textarea id="medicalHistory" placeholder="Chronic conditions, previous surgeries, etc."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Emergency Contact</label>
-                                <input type="tel" id="emergencyContact" placeholder="Phone number">
-                            </div>
-                            <div class="form-group">
-                                <label>Insurance ID</label>
-                                <input type="text" id="insuranceId" placeholder="Insurance policy number">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Records Tab -->
+                <div id="medical-records-tab" class="tab-content hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📄 Medical Records & History</h2>
+                        </div>
+                        <div class="card-body" id="medicalRecordsContainer">
+                            <p>No medical records found. Your doctor will add records after consultation.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -967,7 +1429,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h2>🛏️ Bed Management System</h2>
-                        <button class="btn btn-secondary btn-sm" onclick="loadBeds()">🔄 Refresh</button>
+                        <button class="btn btn-secondary btn-sm" onclick="loadBeds()" style="margin-top: var(--spacing-md);">🔄 Refresh</button>
                     </div>
                     <div class="card-body">
                         <div class="stats-grid">
@@ -988,18 +1450,18 @@
                             </div>
                             <div class="stat-card">
                                 <span class="stat-icon">📊</span>
-                                <h3>Occupancy</h3>
+                                <h3>Occupancy Rate</h3>
                                 <p class="stat-value" id="occupancyRate">12.5%</p>
                             </div>
                         </div>
 
                         <div style="margin-top: var(--spacing-lg);">
                             <div class="form-group">
-                                <label>Search:</label>
+                                <label>Search Bed:</label>
                                 <input type="text" id="bedSearch" placeholder="Bed number or patient name..." onkeyup="filterBeds()">
                             </div>
                             <div class="form-group">
-                                <label>Ward:</label>
+                                <label>Filter by Ward:</label>
                                 <select id="bedWardFilter" onchange="filterBeds()">
                                     <option value="">All Wards</option>
                                     <option value="ICU">ICU</option>
@@ -1012,28 +1474,28 @@
                             </div>
                         </div>
 
-                        <div class="beds-grid" id="bedsGrid">
+                        <div class="grid-3" id="bedsGrid">
                             <p>Loading beds...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- AI Dashboard -->
+            <!-- AI Dashboard (FEATURE 4: ROLE-BASED ACCESS) -->
             <div id="aiDashboard" class="hidden">
                 <div class="card">
                     <div class="card-header">
-                        <h2>🤖 AI Analytics & Predictions Dashboard</h2>
-                        <button class="btn btn-secondary btn-sm" onclick="loadAIData()">🔄 Refresh Data</button>
+                        <h2>🤖 AI Analytics & Predictions Dashboard <span class="analytics-access-badge" id="accessBadge" style="display: inline;"></span></h2>
+                        <button class="btn btn-secondary btn-sm" onclick="loadAIData()" style="margin-top: var(--spacing-md);">🔄 Refresh Data</button>
                     </div>
                     <div class="card-body">
                         <!-- Tabs -->
                         <div class="tabs">
                             <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
-                            <button class="tab-btn" onclick="showTab('admissions')">📈 Admissions</button>
-                            <button class="tab-btn" onclick="showTab('alerts')">🚨 Alerts</button>
-                            <button class="tab-btn" onclick="showTab('readmission')">⚕️ Readmission Risk</button>
-                            <button class="tab-btn" onclick="showTab('departments')">🏢 Departments</button>
+                            <button class="tab-btn" id="admissionsTabBtn" onclick="showTab('admissions')">📈 Admissions</button>
+                            <button class="tab-btn" id="alertsTabBtn" onclick="showTab('alerts')">🚨 Alerts</button>
+                            <button class="tab-btn" id="readmissionTabBtn" onclick="showTab('readmission')">⚕️ Readmission</button>
+                            <button class="tab-btn" id="departmentsTabBtn" onclick="showTab('departments')">🏢 Departments</button>
                         </div>
 
                         <!-- Overview Tab -->
@@ -1049,45 +1511,28 @@
                                     <span class="stat-icon">📊</span>
                                     <h3>Bed Utilization</h3>
                                     <p class="stat-value">87%</p>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 87%;"></div>
-                                    </div>
                                 </div>
                                 <div class="stat-card">
                                     <span class="stat-icon">⏱️</span>
                                     <h3>Avg Wait Time</h3>
                                     <p class="stat-value">18 min</p>
-                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Emergency: 35%</p>
                                 </div>
                                 <div class="stat-card">
                                     <span class="stat-icon">⭐</span>
                                     <h3>Patient Satisfaction</h3>
                                     <p class="stat-value">4.6/5</p>
-                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Based on surveys</p>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-icon">📈</span>
-                                    <h3>Surgery Success</h3>
-                                    <p class="stat-value">97.2%</p>
-                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">Last 30 days</p>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-icon">🔄</span>
-                                    <h3>Readmission Rate</h3>
-                                    <p class="stat-value">8.5%</p>
-                                    <p style="margin: var(--spacing-xs) 0; color: white; opacity: 0.9;">30-day readmissions</p>
                                 </div>
                             </div>
 
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h2>🚨 Recent Risk Alerts</h2>
+                                    <h2>🚨 Risk Alerts (Real-Time Monitoring)</h2>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body" id="riskAlertsContainer">
                                     <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
                                         <h4 style="margin: 0 0 var(--spacing-sm) 0;">🚨 High Admission Rate Detected</h4>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Predicted 25% increase in admissions for next 3 days</p>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Activate contingency staffing plan</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Predicted 25% increase in admissions next 3 days</p>
+                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Activate contingency staffing</p>
                                     </div>
 
                                     <div style="padding: var(--spacing-lg); border-left: 4px solid var(--warning-color); background-color: #fdebd0; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
@@ -1095,219 +1540,180 @@
                                         <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">ICU occupancy predicted to reach 85% by tomorrow</p>
                                         <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--warning-color); font-weight: 600;">Action: Prepare additional ICU beds</p>
                                     </div>
-
-                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius);">
-                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🦠 Possible Respiratory Outbreak</h4>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Unusual cluster of respiratory cases detected in pediatrics ward</p>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Implement isolation protocols. Notify epidemiology team.</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Admissions Tab -->
+                        <!-- Admissions Tab (DOCTOR RESTRICTED) -->
                         <div id="admissionsTab" class="tab-content">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h2>📈 7-Day Admission Forecast</h2>
-                                </div>
-                                <div class="card-body">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Day</th>
-                                                <th>Predicted</th>
-                                                <th>Confidence</th>
-                                                <th>Risk Level</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>2024-12-10</td>
-                                                <td>Monday</td>
-                                                <td><strong>145</strong></td>
-                                                <td>87%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-11</td>
-                                                <td>Tuesday</td>
-                                                <td><strong>168</strong></td>
-                                                <td>85%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-12</td>
-                                                <td>Wednesday</td>
-                                                <td><strong>178</strong></td>
-                                                <td>82%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-13</td>
-                                                <td>Thursday</td>
-                                                <td><strong>152</strong></td>
-                                                <td>88%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-14</td>
-                                                <td>Friday</td>
-                                                <td><strong>165</strong></td>
-                                                <td>84%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-15</td>
-                                                <td>Saturday</td>
-                                                <td><strong>138</strong></td>
-                                                <td>81%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2024-12-16</td>
-                                                <td>Sunday</td>
-                                                <td><strong>142</strong></td>
-                                                <td>80%</td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                            <div id="admissionsContent">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>📈 7-Day Admission Forecast</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <table id="admissionsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Predicted</th>
+                                                    <th>Confidence</th>
+                                                    <th>Risk Level</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="admissionsTableBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Alerts Tab -->
+                        <!-- Alerts Tab (DOCTOR RESTRICTED) -->
                         <div id="alertsTab" class="tab-content">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h2>🚨 All Risk Alerts</h2>
-                                </div>
-                                <div class="card-body">
-                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
-                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🚨 High Admission Rate Detected</h4>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Predicted 25% increase in admissions for next 3 days</p>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Activate contingency staffing plan</p>
-                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--danger-color); color: white; font-weight: 600; font-size: var(--font-sm);">HIGH</span>
+                            <div id="alertsContent">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>🚨 All Critical Alerts</h2>
                                     </div>
-
-                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--warning-color); background-color: #fdebd0; border-radius: var(--border-radius); margin-bottom: var(--spacing-md);">
-                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">⚠️ ICU Occupancy Trending High</h4>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">ICU occupancy predicted to reach 85% by tomorrow</p>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--warning-color); font-weight: 600;">Action: Prepare additional ICU beds</p>
-                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--warning-color); color: white; font-weight: 600; font-size: var(--font-sm);">MEDIUM</span>
-                                    </div>
-
-                                    <div style="padding: var(--spacing-lg); border-left: 4px solid var(--danger-color); background-color: #fadbd8; border-radius: var(--border-radius);">
-                                        <h4 style="margin: 0 0 var(--spacing-sm) 0;">🦠 Possible Respiratory Outbreak</h4>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">Unusual cluster of respiratory cases detected in pediatrics ward</p>
-                                        <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm); color: var(--danger-color); font-weight: 600;">Action: Implement isolation protocols. Notify epidemiology team.</p>
-                                        <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; background-color: var(--danger-color); color: white; font-weight: 600; font-size: var(--font-sm);">HIGH</span>
+                                    <div class="card-body" id="allAlertsContainer">
+                                        <p>No critical alerts at this time</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Readmission Tab -->
+                        <!-- Readmission Tab (DOCTOR RESTRICTED) -->
                         <div id="readmissionTab" class="tab-content">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h2>⚕️ Readmission Risk Assessment</h2>
-                                </div>
-                                <div class="card-body">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Patient ID</th>
-                                                <th>Name</th>
-                                                <th>Risk Score</th>
-                                                <th>Risk Level</th>
-                                                <th>Condition</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>PAT0001</td>
-                                                <td>Patient 1</td>
-                                                <td><strong>78%</strong></td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fadbd8; color: #e74c3c; font-weight: 600;">HIGH</span></td>
-                                                <td>Hypertension</td>
-                                            </tr>
-                                            <tr>
-                                                <td>PAT0002</td>
-                                                <td>Patient 2</td>
-                                                <td><strong>65%</strong></td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
-                                                <td>Diabetes</td>
-                                            </tr>
-                                            <tr>
-                                                <td>PAT0003</td>
-                                                <td>Patient 3</td>
-                                                <td><strong>42%</strong></td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
-                                                <td>COPD</td>
-                                            </tr>
-                                            <tr>
-                                                <td>PAT0004</td>
-                                                <td>Patient 4</td>
-                                                <td><strong>72%</strong></td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fadbd8; color: #e74c3c; font-weight: 600;">HIGH</span></td>
-                                                <td>Heart Disease</td>
-                                            </tr>
-                                            <tr>
-                                                <td>PAT0005</td>
-                                                <td>Patient 5</td>
-                                                <td><strong>58%</strong></td>
-                                                <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
-                                                <td>Post-Surgery</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                            <div id="readmissionContent">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>⚕️ Readmission Risk Assessment</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient</th>
+                                                    <th>Risk Score</th>
+                                                    <th>Level</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="readmissionTableBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Departments Tab -->
+                        <!-- Departments Tab (DOCTOR RESTRICTED) -->
                         <div id="departmentsTab" class="tab-content">
-                            <div class="stats-grid">
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Cardiology</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 45 | Success: 96%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.7/5</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Neurology</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 32 | Success: 94%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.5/5</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Orthopedics</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 58 | Success: 98%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.8/5</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Pediatrics</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 67 | Success: 99%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.9/5</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Surgery</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 41 | Success: 97%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.7/5</p>
-                                </div>
-                                <div class="stat-card">
-                                    <h3 style="margin-top: 0;">Internal Medicine</h3>
-                                    <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 73 | Success: 93%</p>
-                                    <p style="margin: 0; font-size: var(--font-sm);">⭐ Satisfaction: 4.4/5</p>
+                            <div id="departmentsContent">
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <h3 style="margin-top: 0;">Cardiology</h3>
+                                        <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 45 | Success: 96%</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <h3 style="margin-top: 0;">Neurology</h3>
+                                        <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 32 | Success: 94%</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <h3 style="margin-top: 0;">Orthopedics</h3>
+                                        <p style="margin: var(--spacing-sm) 0; font-size: var(--font-sm);">Patients: 58 | Success: 98%</p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Patient Restricted Message -->
+                        <div id="patientRestrictedMessage" class="restricted-content hidden">
+                            <h4>🔒 Doctor-Only Data</h4>
+                            <p>This section contains sensitive clinical data accessible only to healthcare professionals. You can view general health insights and your personal health metrics in your profile.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Modals -->
+
+    <!-- Appointment Details Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Appointment Details</h2>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">✕</button>
+            </div>
+            <div class="card-body" id="appointmentModalContent">
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Report Modal (for doctors) -->
+    <div id="uploadReportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload Meeting Report</h2>
+                <button class="modal-close" onclick="closeModal('uploadReportModal')">✕</button>
+            </div>
+            <form onsubmit="handleUploadReport(event)" style="padding: var(--spacing-lg) 0;">
+                <div class="form-group">
+                    <label>Meeting Status</label>
+                    <select id="meetingStatus" required>
+                        <option value="">Select status</option>
+                        <option value="COMPLETED">Completed Successfully</option>
+                        <option value="PARTIAL">Partially Completed</option>
+                        <option value="RESCHEDULED">Rescheduled</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Diagnosis</label>
+                    <textarea id="diagnosisReport" placeholder="Medical findings and diagnosis" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Treatment Plan</label>
+                    <textarea id="treatmentPlan" placeholder="Prescribed treatment and medications" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Recommendations</label>
+                    <textarea id="recommendations" placeholder="Follow-up and lifestyle recommendations"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Upload Report</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reschedule Appointment</h2>
+                <button class="modal-close" onclick="closeModal('rescheduleModal')">✕</button>
+            </div>
+            <form onsubmit="handleReschedule(event)" style="padding: var(--spacing-lg) 0;">
+                <div class="form-group">
+                    <label>Select New Date (Within 15 Days)</label>
+                    <input type="date" id="rescheduleDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Time Slots</label>
+                    <div class="slots-container" id="rescheduleSlots">
+                        <p style="grid-column: 1/-1; text-align: center;">Select date first</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Confirm Reschedule</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         // ========================================
@@ -1320,16 +1726,47 @@
             appointments: [],
             doctors: [],
             beds: [],
-            allBeds: []
+            allBeds: [],
+            selectedSlot: null,
+            rescheduleAppointmentId: null,
+            uploadReportAppointmentId: null,
+            healthMetrics: {}
         };
 
         // Mock Doctors Data
         const mockDoctors = [
-            { id: 1, name: 'Dr. Priya Patel', specialization: 'Cardiology', experience_years: 8, consultation_fee: 500 },
-            { id: 2, name: 'Dr. Rajesh Verma', specialization: 'Neurology', experience_years: 12, consultation_fee: 600 },
-            { id: 3, name: 'Dr. Anjali Singh', specialization: 'Pediatrics', experience_years: 7, consultation_fee: 400 },
-            { id: 4, name: 'Dr. Vikram Kumar', specialization: 'Surgery', experience_years: 15, consultation_fee: 700 },
-            { id: 5, name: 'Dr. Neha Gupta', specialization: 'Orthopedics', experience_years: 6, consultation_fee: 450 },
+            { 
+                id: 1, 
+                name: 'Dr. Priya Patel', 
+                specialization: 'Cardiology', 
+                experience_years: 8, 
+                consultation_fee: 500,
+                slots: ['09:00', '09:30', '10:00', '10:30', '14:00', '14:30', '15:00']
+            },
+            { 
+                id: 2, 
+                name: 'Dr. Rajesh Verma', 
+                specialization: 'Neurology', 
+                experience_years: 12, 
+                consultation_fee: 600,
+                slots: ['10:00', '10:30', '11:00', '15:00', '15:30', '16:00']
+            },
+            { 
+                id: 3, 
+                name: 'Dr. Anjali Singh', 
+                specialization: 'Pediatrics', 
+                experience_years: 7, 
+                consultation_fee: 400,
+                slots: ['08:00', '08:30', '09:00', '13:00', '13:30', '14:00']
+            },
+            { 
+                id: 4, 
+                name: 'Dr. Vikram Kumar', 
+                specialization: 'Surgery', 
+                experience_years: 15, 
+                consultation_fee: 700,
+                slots: ['11:00', '11:30', '12:00', '16:00', '16:30']
+            },
         ];
 
         // Mock Beds Data
@@ -1343,6 +1780,46 @@
             { id: 7, bed_number: 'SURG-501', ward: 'Surgery', bed_type: 'Post-Op', priority: 'High', status: 'AVAILABLE' },
             { id: 8, bed_number: 'ORTHO-601', ward: 'Orthopedics', bed_type: 'Standard', priority: 'Standard', status: 'AVAILABLE' },
         ];
+
+        // ========================================
+        // UTILITY FUNCTIONS
+        // ========================================
+        function showAlert(elementId, message, type = 'danger') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show', `alert-${type}`);
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 5000);
+        }
+
+        function getDateOnly(date) {
+            return new Date(date).toLocaleDateString('en-CA');
+        }
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        function isDateWithin15Days(date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDate = new Date(date);
+            selectedDate.setHours(0, 0, 0, 0);
+            const diffTime = selectedDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays >= 0 && diffDays <= 15;
+        }
+
+        function setDateConstraints() {
+            const dateInput = document.getElementById('appointmentDate');
+            const today = new Date().toISOString().split('T')[0];
+            const maxDate = addDays(new Date(), 15).toISOString().split('T')[0];
+            dateInput.min = today;
+            dateInput.max = maxDate;
+        }
 
         // ========================================
         // AUTH FUNCTIONS
@@ -1362,7 +1839,6 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            // Mock authentication
             const user = {
                 id: Math.floor(Math.random() * 1000),
                 name: email.split('@')[0],
@@ -1385,8 +1861,7 @@
             const role = document.getElementById('registerRole').value;
 
             if (password !== document.getElementById('registerConfirm').value) {
-                document.getElementById('registerError').textContent = '❌ Passwords do not match';
-                document.getElementById('registerError').classList.add('show');
+                showAlert('registerError', '❌ Passwords do not match', 'danger');
                 return;
             }
 
@@ -1423,10 +1898,9 @@
             document.getElementById('mainContent').classList.add('show');
             document.getElementById('header').classList.add('show');
 
-            // Update header
             document.getElementById('userName').textContent = appState.currentUser.name;
+            document.getElementById('userRole').textContent = appState.currentUser.role;
 
-            // Update header nav
             const headerNav = document.getElementById('headerNav');
             headerNav.innerHTML = '';
             if (appState.currentUser.role === 'PATIENT') {
@@ -1436,6 +1910,7 @@
                     <a onclick="showPage('appointments')">My Appointments</a>
                     <a onclick="showPage('profile')">My Profile</a>
                     <a onclick="showPage('beds')">Bed Availability</a>
+                    <a onclick="showPage('aiDashboard')">AI Insights</a>
                 `;
                 showPage('patientDashboard');
             } else if (appState.currentUser.role === 'DOCTOR') {
@@ -1443,13 +1918,15 @@
                     <a onclick="showPage('doctorDashboard')">Dashboard</a>
                     <a onclick="showPage('appointments')">My Appointments</a>
                     <a onclick="showPage('beds')">Bed Management</a>
+                    <a onclick="showPage('aiDashboard')">AI Analytics</a>
                 `;
                 showPage('doctorDashboard');
             }
+
+            setDateConstraints();
         }
 
         function showPage(pageName) {
-            // Hide all pages
             const pages = [
                 'patientDashboard', 'doctorDashboard', 'bookAppointment', 
                 'appointments', 'profile', 'beds', 'aiDashboard'
@@ -1458,11 +1935,9 @@
                 document.getElementById(page).classList.add('hidden');
             });
 
-            // Show selected page
             document.getElementById(pageName).classList.remove('hidden');
             appState.currentPage = pageName;
 
-            // Load data
             if (pageName === 'patientDashboard') {
                 document.getElementById('patientName').textContent = appState.currentUser.name;
                 loadAppointments();
@@ -1471,6 +1946,7 @@
                 loadDoctorStats();
             } else if (pageName === 'bookAppointment') {
                 loadDoctors();
+                setDateConstraints();
             } else if (pageName === 'appointments') {
                 loadAppointments();
             } else if (pageName === 'beds') {
@@ -1478,10 +1954,12 @@
             } else if (pageName === 'aiDashboard') {
                 loadAIData();
             }
+
+            window.scrollTo(0, 0);
         }
 
         // ========================================
-        // DATA LOADING
+        // FEATURE 1: SLOT-BASED APPOINTMENT BOOKING
         // ========================================
         function loadDoctors() {
             appState.doctors = mockDoctors;
@@ -1490,99 +1968,644 @@
             mockDoctors.forEach(doctor => {
                 const option = document.createElement('option');
                 option.value = doctor.id;
-                option.textContent = `Dr. ${doctor.name} - ${doctor.specialization}`;
+                option.textContent = `Dr. ${doctor.name} - ${doctor.specialization} (₹${doctor.consultation_fee})`;
                 selectDoctor.appendChild(option);
             });
 
-            // Show available doctors
             const availableDoctors = document.getElementById('availableDoctors');
             availableDoctors.innerHTML = '';
             mockDoctors.forEach(doctor => {
                 const doctorCard = document.createElement('div');
-                doctorCard.style.cssText = 'background-color: var(--light-bg); border-left: 4px solid var(--primary-color); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); border-radius: var(--border-radius); transition: transform 0.3s ease;';
+                doctorCard.style.cssText = 'background-color: var(--light-bg); border-left: 4px solid var(--primary-color); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); border-radius: var(--border-radius);';
                 doctorCard.innerHTML = `
                     <h4 style="margin: 0 0 var(--spacing-sm) 0; color: var(--primary-color);">Dr. ${doctor.name}</h4>
                     <p style="margin: 0; font-size: var(--font-sm);"><strong>Specialization:</strong> ${doctor.specialization}</p>
                     <p style="margin: 0; font-size: var(--font-sm);"><strong>Experience:</strong> ${doctor.experience_years} years</p>
                     <p style="margin: 0; font-size: var(--font-sm);"><strong>Consultation Fee:</strong> ₹${doctor.consultation_fee}</p>
+                    <p style="margin: var(--spacing-sm) 0 0 0; font-size: var(--font-sm);"><strong>Available Slots:</strong> ${doctor.slots.join(', ')}</p>
                 `;
                 availableDoctors.appendChild(doctorCard);
             });
         }
 
-        function loadAppointments() {
-            // Generate mock appointments
-            appState.appointments = [
-                { id: 1, doctor_name: 'Dr. Priya Patel', patient_name: appState.currentUser.name, appointment_date: '2024-12-20 14:30:00', status: 'SCHEDULED', reason: 'Regular checkup' },
-                { id: 2, doctor_name: 'Dr. Rajesh Verma', patient_name: appState.currentUser.name, appointment_date: '2024-12-22 10:00:00', status: 'SCHEDULED', reason: 'Consultation' },
-            ];
+        function loadDoctorSlots() {
+            const doctorId = document.getElementById('selectDoctor').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
 
+            const slotsContainer = document.getElementById('slotsContainer');
+            slotsContainer.innerHTML = '';
+
+            if (!doctorId || !appointmentDate) {
+                slotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Select a doctor and date first</p>';
+                return;
+            }
+
+            if (!isDateWithin15Days(appointmentDate)) {
+                slotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--danger-color);">❌ Can only book appointments within 15 days</p>';
+                return;
+            }
+
+            const doctor = mockDoctors.find(d => d.id == doctorId);
+            if (!doctor) return;
+
+            doctor.slots.forEach(slot => {
+                const slotBtn = document.createElement('button');
+                slotBtn.type = 'button';
+                slotBtn.className = 'slot-btn';
+                slotBtn.textContent = slot;
+                slotBtn.onclick = (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+                    slotBtn.classList.add('selected');
+                    appState.selectedSlot = slot;
+                };
+                slotsContainer.appendChild(slotBtn);
+            });
+        }
+
+        function handleBookAppointment(e) {
+            e.preventDefault();
+            const doctorId = document.getElementById('selectDoctor').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const reason = document.getElementById('appointmentReason').value;
+
+            if (!doctorId || !appointmentDate || !appState.selectedSlot || !reason) {
+                showAlert('bookAppointmentError', '❌ Please select all required fields', 'danger');
+                return;
+            }
+
+            if (!isDateWithin15Days(appointmentDate)) {
+                showAlert('bookAppointmentError', '❌ Can only book within 15 days', 'danger');
+                return;
+            }
+
+            const doctor = mockDoctors.find(d => d.id == doctorId);
+            const appointment = {
+                id: Math.floor(Math.random() * 10000),
+                doctor_id: doctorId,
+                doctor_name: `Dr. ${doctor.name}`,
+                patient_id: appState.currentUser.id,
+                patient_name: appState.currentUser.name,
+                appointment_date: `${appointmentDate} ${appState.selectedSlot}:00`,
+                status: 'SCHEDULED',
+                reason: reason,
+                notification_sent: true,
+                prior_notification: '24 hours before appointment',
+                report_uploaded: false,
+                meeting_report: null
+            };
+
+            appState.appointments.push(appointment);
+            showAlert('bookAppointmentSuccess', '✅ Appointment booked successfully! You will receive a notification 24 hours before the appointment.', 'success');
+            
+            setTimeout(() => {
+                document.getElementById('selectDoctor').value = '';
+                document.getElementById('appointmentDate').value = '';
+                document.getElementById('appointmentReason').value = '';
+                appState.selectedSlot = null;
+                document.getElementById('slotsContainer').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Select a doctor and date first</p>';
+            }, 2000);
+        }
+
+        // ========================================
+        // FEATURE 2: APPOINTMENTS WITH NOTIFICATIONS & REPORTS
+        // ========================================
+        function loadAppointments() {
             const appointmentsList = document.getElementById('appointmentsList');
             appointmentsList.innerHTML = '';
 
             if (appState.appointments.length === 0) {
-                appointmentsList.innerHTML = '<p>No appointments found</p>';
+                appointmentsList.innerHTML = appState.currentUser.role === 'PATIENT' 
+                    ? '<p>No appointments found. <a onclick="showPage(\'bookAppointment\')">Book one now!</a></p>'
+                    : '<p>No appointments scheduled</p>';
             } else {
                 appState.appointments.forEach(apt => {
                     const aptDiv = document.createElement('div');
-                    aptDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-md); background-color: var(--light-bg);';
+                    aptDiv.className = `appointment-card ${apt.status.toLowerCase()}`;
+                    
+                    let actions = '';
+                    if (apt.status === 'SCHEDULED') {
+                        if (appState.currentUser.role === 'PATIENT') {
+                            actions = `
+                                <button class="btn btn-secondary btn-sm" onclick="openRescheduleModal(${apt.id})">📅 Reschedule</button>
+                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">❌ Cancel</button>
+                            `;
+                        } else {
+                            actions = `
+                                <button class="btn btn-success btn-sm" onclick="openUploadReportModal(${apt.id})">📄 Upload Report</button>
+                            `;
+                        }
+                    } else if (apt.status === 'COMPLETED') {
+                        if (appState.currentUser.role === 'PATIENT' && apt.report_uploaded) {
+                            actions = `
+                                <button class="btn btn-secondary btn-sm" onclick="viewMeetingReport(${apt.id})">👁️ View Report</button>
+                            `;
+                        }
+                    }
+
+                    const appointmentDate = new Date(apt.appointment_date);
+                    const dateStr = appointmentDate.toLocaleDateString();
+                    const timeStr = appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
                     aptDiv.innerHTML = `
-                        <div>
-                            <h4 style="margin: 0 0 var(--spacing-xs) 0;">${apt.doctor_name}</h4>
-                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${new Date(apt.appointment_date).toLocaleString()}</p>
-                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.reason}</p>
-                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; background-color: #27ae60; color: white; font-weight: 600; font-size: var(--font-sm);">${apt.status}</span>
+                        <div class="appointment-header">
+                            <div>
+                                <h4>${appState.currentUser.role === 'PATIENT' ? apt.doctor_name : apt.patient_name}</h4>
+                                <span class="status-badge ${apt.status.toLowerCase()}">${apt.status}</span>
+                            </div>
                         </div>
-                        <button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">Cancel</button>
+                        
+                        ${apt.notification_sent && apt.status === 'SCHEDULED' ? `
+                            <div class="notification-banner">
+                                <span class="notification-icon">🔔</span>
+                                <div class="notification-content">
+                                    <h4>Appointment Reminder</h4>
+                                    <p>You will receive a notification ${apt.prior_notification}</p>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="appointment-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Date & Time:</span>
+                                <span>${dateStr} at ${timeStr}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Reason:</span>
+                                <span>${apt.reason}</span>
+                            </div>
+                            ${apt.report_uploaded ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">Report Status:</span>
+                                    <span style="color: var(--success-color); font-weight: 600;">✅ Report Uploaded</span>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="appointment-actions">
+                            ${actions}
+                            <button class="btn btn-secondary btn-sm" onclick="viewAppointmentDetails(${apt.id})">👁️ View Details</button>
+                        </div>
                     `;
                     appointmentsList.appendChild(aptDiv);
                 });
             }
 
-            // Update doctor dashboard stats
-            if (document.getElementById('doctorUpcomingAppointments')) {
-                const doctorUpcomingAppointments = document.getElementById('doctorUpcomingAppointments');
-                doctorUpcomingAppointments.innerHTML = '';
-                appState.appointments.filter(apt => apt.status === 'SCHEDULED').forEach(apt => {
-                    const aptDiv = document.createElement('div');
-                    aptDiv.className = 'appointment-preview';
-                    aptDiv.innerHTML = `
-                        <div>
-                            <h4>${apt.patient_name}</h4>
-                            <p>${new Date(apt.appointment_date).toLocaleString()}</p>
-                            <p>${apt.reason}</p>
-                        </div>
-                    `;
-                    doctorUpcomingAppointments.appendChild(aptDiv);
-                });
-                if (appState.appointments.filter(apt => apt.status === 'SCHEDULED').length === 0) {
-                    doctorUpcomingAppointments.innerHTML = '<p>No upcoming appointments today</p>';
-                }
+            if (appState.currentUser.role === 'DOCTOR') {
+                loadDoctorStats();
             }
 
-            // Update patient dashboard
-            if (document.getElementById('upcomingAppointments')) {
+            if (appState.currentUser.role === 'PATIENT') {
                 const upcomingAppointments = document.getElementById('upcomingAppointments');
-                upcomingAppointments.innerHTML = '';
-                appState.appointments.filter(apt => apt.status === 'SCHEDULED').forEach(apt => {
-                    const aptDiv = document.createElement('div');
-                    aptDiv.className = 'appointment-preview';
-                    aptDiv.innerHTML = `
-                        <div>
-                            <h4>${apt.doctor_name}</h4>
-                            <p>${new Date(apt.appointment_date).toLocaleString()}</p>
-                            <p>${apt.reason}</p>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="showPage('appointments')">View Details</button>
-                    `;
-                    upcomingAppointments.appendChild(aptDiv);
-                });
-                if (appState.appointments.filter(apt => apt.status === 'SCHEDULED').length === 0) {
-                    upcomingAppointments.innerHTML = '<p>No upcoming appointments. <a onclick="showPage(\'bookAppointment\')">Book one now!</a></p>';
+                if (upcomingAppointments) {
+                    upcomingAppointments.innerHTML = '';
+                    appState.appointments.filter(apt => apt.status === 'SCHEDULED').forEach(apt => {
+                        const aptDiv = document.createElement('div');
+                        aptDiv.className = 'appointment-card';
+                        const appointmentDate = new Date(apt.appointment_date);
+                        const dateStr = appointmentDate.toLocaleDateString();
+                        const timeStr = appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        aptDiv.innerHTML = `
+                            <div class="appointment-header">
+                                <div>
+                                    <h4>${apt.doctor_name}</h4>
+                                    <p style="margin: 0; font-size: var(--font-sm);">${dateStr} at ${timeStr}</p>
+                                    <p style="margin: 0; font-size: var(--font-sm);">${apt.reason}</p>
+                                </div>
+                            </div>
+                            <div class="notification-banner">
+                                <span class="notification-icon">🔔</span>
+                                <div class="notification-content">
+                                    <p style="margin: 0;">Notification will be sent ${apt.prior_notification}</p>
+                                </div>
+                            </div>
+                        `;
+                        upcomingAppointments.appendChild(aptDiv);
+                    });
+                    if (appState.appointments.filter(apt => apt.status === 'SCHEDULED').length === 0) {
+                        upcomingAppointments.innerHTML = '<p>No upcoming appointments. <a onclick="showPage(\'bookAppointment\')">Book one now!</a></p>';
+                    }
                 }
             }
         }
 
+        function openUploadReportModal(appointmentId) {
+            appState.uploadReportAppointmentId = appointmentId;
+            document.getElementById('uploadReportModal').classList.add('show');
+        }
+
+        function handleUploadReport(e) {
+            e.preventDefault();
+            const apt = appState.appointments.find(a => a.id === appState.uploadReportAppointmentId);
+            if (!apt) return;
+
+            apt.status = 'COMPLETED';
+            apt.report_uploaded = true;
+            apt.meeting_report = {
+                status: document.getElementById('meetingStatus').value,
+                diagnosis: document.getElementById('diagnosisReport').value,
+                treatment: document.getElementById('treatmentPlan').value,
+                recommendations: document.getElementById('recommendations').value,
+                uploadedAt: new Date().toLocaleString()
+            };
+
+            showAlert('uploadReportSuccess', '✅ Report uploaded successfully!', 'success');
+            closeModal('uploadReportModal');
+            loadAppointments();
+        }
+
+        function openRescheduleModal(appointmentId) {
+            appState.rescheduleAppointmentId = appointmentId;
+            setDateConstraints();
+            document.getElementById('rescheduleModal').classList.add('show');
+        }
+
+        function handleReschedule(e) {
+            e.preventDefault();
+            const apt = appState.appointments.find(a => a.id === appState.rescheduleAppointmentId);
+            if (!apt || !appState.selectedSlot) {
+                showAlert('rescheduleError', '❌ Please select a slot', 'danger');
+                return;
+            }
+
+            const newDate = document.getElementById('rescheduleDate').value;
+            apt.appointment_date = `${newDate} ${appState.selectedSlot}:00`;
+            apt.status = 'SCHEDULED';
+
+            showAlert('rescheduleSuccess', '✅ Appointment rescheduled successfully!', 'success');
+            closeModal('rescheduleModal');
+            loadAppointments();
+        }
+
+        function cancelAppointment(id) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                const apt = appState.appointments.find(a => a.id === id);
+                if (apt) {
+                    apt.status = 'CANCELLED';
+                    showAlert('cancelSuccess', '✅ Appointment cancelled', 'success');
+                    loadAppointments();
+                }
+            }
+        }
+
+        function filterAppointments(status) {
+            const appointmentsList = document.getElementById('appointmentsList');
+            appointmentsList.innerHTML = '';
+
+            let filtered = status === 'all' ? appState.appointments : appState.appointments.filter(apt => apt.status === status);
+
+            if (filtered.length === 0) {
+                appointmentsList.innerHTML = '<p>No appointments found</p>';
+            } else {
+                filtered.forEach(apt => {
+                    const aptDiv = document.createElement('div');
+                    aptDiv.className = `appointment-card ${apt.status.toLowerCase()}`;
+                    
+                    const appointmentDate = new Date(apt.appointment_date);
+                    const dateStr = appointmentDate.toLocaleDateString();
+                    const timeStr = appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    let actions = '';
+                    if (apt.status === 'SCHEDULED') {
+                        if (appState.currentUser.role === 'PATIENT') {
+                            actions = `
+                                <button class="btn btn-secondary btn-sm" onclick="openRescheduleModal(${apt.id})">📅 Reschedule</button>
+                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">❌ Cancel</button>
+                            `;
+                        } else {
+                            actions = `
+                                <button class="btn btn-success btn-sm" onclick="openUploadReportModal(${apt.id})">📄 Upload Report</button>
+                            `;
+                        }
+                    } else if (apt.status === 'COMPLETED' && apt.report_uploaded) {
+                        actions = `
+                            <button class="btn btn-secondary btn-sm" onclick="viewMeetingReport(${apt.id})">👁️ View Report</button>
+                        `;
+                    }
+
+                    aptDiv.innerHTML = `
+                        <div class="appointment-header">
+                            <div>
+                                <h4>${appState.currentUser.role === 'PATIENT' ? apt.doctor_name : apt.patient_name}</h4>
+                                <span class="status-badge ${apt.status.toLowerCase()}">${apt.status}</span>
+                            </div>
+                        </div>
+                        
+                        ${apt.notification_sent && apt.status === 'SCHEDULED' ? `
+                            <div class="notification-banner">
+                                <span class="notification-icon">🔔</span>
+                                <div class="notification-content">
+                                    <h4>Appointment Reminder</h4>
+                                    <p>Notification will be sent ${apt.prior_notification}</p>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="appointment-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Date & Time:</span>
+                                <span>${dateStr} at ${timeStr}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Reason:</span>
+                                <span>${apt.reason}</span>
+                            </div>
+                            ${apt.report_uploaded ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">Report:</span>
+                                    <span style="color: var(--success-color); font-weight: 600;">✅ Report Uploaded</span>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="appointment-actions">
+                            ${actions}
+                            <button class="btn btn-secondary btn-sm" onclick="viewAppointmentDetails(${apt.id})">👁️ Details</button>
+                        </div>
+                    `;
+                    appointmentsList.appendChild(aptDiv);
+                });
+            }
+        }
+
+        function viewAppointmentDetails(id) {
+            const apt = appState.appointments.find(a => a.id === id);
+            if (!apt) return;
+
+            const appointmentDate = new Date(apt.appointment_date);
+            const dateStr = appointmentDate.toLocaleDateString();
+            const timeStr = appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            let reportContent = '';
+            if (apt.report_uploaded && apt.meeting_report) {
+                reportContent = `
+                    <div style="background-color: var(--light-bg); padding: var(--spacing-lg); border-radius: var(--border-radius); margin-top: var(--spacing-lg);">
+                        <h4 style="color: var(--success-color); margin-bottom: var(--spacing-md);">📄 Meeting Report</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span>${apt.meeting_report.status}</span>
+                        </div>
+                        <div style="margin-top: var(--spacing-md);">
+                            <h5 style="margin-bottom: var(--spacing-sm);">Diagnosis:</h5>
+                            <p style="margin: 0; font-size: var(--font-sm);">${apt.meeting_report.diagnosis}</p>
+                        </div>
+                        <div style="margin-top: var(--spacing-md);">
+                            <h5 style="margin-bottom: var(--spacing-sm);">Treatment Plan:</h5>
+                            <p style="margin: 0; font-size: var(--font-sm);">${apt.meeting_report.treatment}</p>
+                        </div>
+                        ${apt.meeting_report.recommendations ? `
+                            <div style="margin-top: var(--spacing-md);">
+                                <h5 style="margin-bottom: var(--spacing-sm);">Recommendations:</h5>
+                                <p style="margin: 0; font-size: var(--font-sm);">${apt.meeting_report.recommendations}</p>
+                            </div>
+                        ` : ''}
+                        <p style="margin-top: var(--spacing-md); margin-bottom: 0; font-size: var(--font-sm); color: #7f8c8d;">Uploaded: ${apt.meeting_report.uploadedAt}</p>
+                    </div>
+                `;
+            }
+
+            const content = `
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="status-badge ${apt.status.toLowerCase()}">${apt.status}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">${appState.currentUser.role === 'PATIENT' ? 'Doctor' : 'Patient'}:</span>
+                    <span>${appState.currentUser.role === 'PATIENT' ? apt.doctor_name : apt.patient_name}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date & Time:</span>
+                    <span>${dateStr} at ${timeStr}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reason:</span>
+                    <span>${apt.reason}</span>
+                </div>
+                ${apt.notification_sent ? `
+                    <div style="margin-top: var(--spacing-md); padding: var(--spacing-md); background-color: #e8f5e9; border-radius: var(--border-radius); border-left: 4px solid var(--success-color);">
+                        <p style="margin: 0; font-size: var(--font-sm);"><strong>🔔 Notification:</strong> ${apt.prior_notification}</p>
+                    </div>
+                ` : ''}
+                ${reportContent}
+            `;
+
+            document.getElementById('appointmentModalContent').innerHTML = content;
+            document.getElementById('appointmentModal').classList.add('show');
+        }
+
+        function viewMeetingReport(id) {
+            viewAppointmentDetails(id);
+        }
+
+        // ========================================
+        // FEATURE 3: ENHANCED PROFILE WITH HEALTH METRICS & MEDICAL RECORDS
+        // ========================================
+        function showProfileTab(tabName) {
+            const tabs = ['medical-info-tab', 'health-metrics-tab', 'medical-records-tab'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).classList.add('hidden');
+            });
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function handleUpdateProfile(e) {
+            e.preventDefault();
+            showAlert('profileSuccess', '✅ Medical information updated successfully!', 'success');
+        }
+
+        function handleUpdateHealthMetrics(e) {
+            e.preventDefault();
+
+            appState.healthMetrics = {
+                bloodPressure: document.getElementById('bloodPressure').value,
+                heartRate: document.getElementById('heartRate').value,
+                bmi: document.getElementById('bmi').value,
+                temperature: document.getElementById('temperature').value,
+                glucose: document.getElementById('glucose').value,
+                oxygenSat: document.getElementById('oxygenSat').value,
+                lastUpdated: new Date().toLocaleString()
+            };
+
+            const healthStatus = document.getElementById('healthStatus');
+            healthStatus.innerHTML = `
+                <div style="background-color: var(--light-bg); padding: var(--spacing-lg); border-radius: var(--border-radius);">
+                    <h4 style="color: var(--success-color); margin-bottom: var(--spacing-md);">✅ Health Metrics Updated</h4>
+                    <div class="grid-3">
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">Blood Pressure</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.bloodPressure} mmHg</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">Heart Rate</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.heartRate} bpm</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">BMI</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.bmi} kg/m²</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">Temperature</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.temperature}°C</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">Glucose Level</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.glucose} mg/dL</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-size: var(--font-sm); color: var(--primary-color); font-weight: 600;">O₂ Saturation</p>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 18px; font-weight: bold;">${appState.healthMetrics.oxygenSat}%</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--spacing-lg); margin-bottom: 0; font-size: var(--font-sm); color: #7f8c8d;">Last updated: ${appState.healthMetrics.lastUpdated}</p>
+                </div>
+
+                <div style="margin-top: var(--spacing-lg); padding: var(--spacing-lg); background-color: #d6eaf8; border-radius: var(--border-radius); border-left: 4px solid var(--info-color);">
+                    <h4 style="margin: 0 0 var(--spacing-md) 0; color: var(--info-color);">📊 Health Analysis</h4>
+                    <ul style="margin: 0; padding-left: var(--spacing-lg); font-size: var(--font-sm);">
+                        <li style="margin-bottom: var(--spacing-sm);">Your blood pressure is <strong>${appState.healthMetrics.bloodPressure.includes('120') ? 'normal' : 'abnormal'}</strong></li>
+                        <li style="margin-bottom: var(--spacing-sm);">Heart rate is <strong>${appState.healthMetrics.heartRate > 100 ? 'elevated' : 'normal'}</strong></li>
+                        <li style="margin-bottom: var(--spacing-sm);">BMI status: <strong>${appState.healthMetrics.bmi < 18.5 ? 'Underweight' : appState.healthMetrics.bmi < 25 ? 'Normal' : appState.healthMetrics.bmi < 30 ? 'Overweight' : 'Obese'}</strong></li>
+                        <li>Oxygen saturation is <strong>${appState.healthMetrics.oxygenSat >= 95 ? 'excellent' : 'acceptable'}</strong></li>
+                    </ul>
+                </div>
+            `;
+
+            showAlert('metricsSuccess', '✅ Health metrics updated successfully!', 'success');
+        }
+
+        function displayMedicalRecords() {
+            const container = document.getElementById('medicalRecordsContainer');
+            if (appState.appointments.filter(a => a.status === 'COMPLETED' && a.report_uploaded).length === 0) {
+                container.innerHTML = '<p>No medical records found. Your doctor will add records after consultation.</p>';
+            } else {
+                container.innerHTML = '';
+                appState.appointments.filter(a => a.status === 'COMPLETED' && a.report_uploaded).forEach(apt => {
+                    const recordDiv = document.createElement('div');
+                    recordDiv.className = 'medical-record';
+                    const dateObj = new Date(apt.appointment_date);
+                    const dateStr = dateObj.toLocaleDateString();
+
+                    recordDiv.innerHTML = `
+                        <div class="record-date">📅 ${dateStr}</div>
+                        <div class="record-title">Dr. ${apt.doctor_name}</div>
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <h5 style="margin: var(--spacing-sm) 0; color: var(--primary-color);">Diagnosis:</h5>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.meeting_report.diagnosis}</p>
+                        </div>
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <h5 style="margin: var(--spacing-sm) 0; color: var(--primary-color);">Treatment:</h5>
+                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.meeting_report.treatment}</p>
+                        </div>
+                        ${apt.meeting_report.recommendations ? `
+                            <div>
+                                <h5 style="margin: var(--spacing-sm) 0; color: var(--primary-color);">Recommendations:</h5>
+                                <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.meeting_report.recommendations}</p>
+                            </div>
+                        ` : ''}
+                    `;
+                    container.appendChild(recordDiv);
+                });
+            }
+        }
+
+        // ========================================
+        // FEATURE 4: ROLE-BASED AI ANALYTICS ACCESS
+        // ========================================
+        function loadAIData() {
+            const accessBadge = document.getElementById('accessBadge');
+            const doctorTabs = ['admissionsTabBtn', 'alertsTabBtn', 'readmissionTabBtn', 'departmentsTabBtn'];
+
+            if (appState.currentUser.role === 'DOCTOR') {
+                accessBadge.textContent = 'DOCTOR ACCESS';
+                accessBadge.className = 'analytics-access-badge doctor';
+                
+                doctorTabs.forEach(tabId => {
+                    document.getElementById(tabId).style.display = 'inline-block';
+                });
+                document.getElementById('patientRestrictedMessage').classList.add('hidden');
+
+                // Load doctor data
+                loadDoctorAnalytics();
+            } else {
+                accessBadge.textContent = 'LIMITED ACCESS';
+                accessBadge.className = 'analytics-access-badge patient';
+                
+                doctorTabs.forEach(tabId => {
+                    document.getElementById(tabId).style.display = 'none';
+                });
+                document.getElementById('patientRestrictedMessage').classList.remove('hidden');
+            }
+        }
+
+        function loadDoctorAnalytics() {
+            // Populate admissions table
+            const admissionsTableBody = document.getElementById('admissionsTableBody');
+            admissionsTableBody.innerHTML = `
+                <tr>
+                    <td>2024-12-10</td>
+                    <td><strong>145</strong></td>
+                    <td>87%</td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                </tr>
+                <tr>
+                    <td>2024-12-11</td>
+                    <td><strong>168</strong></td>
+                    <td>85%</td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>2024-12-12</td>
+                    <td><strong>178</strong></td>
+                    <td>82%</td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>2024-12-13</td>
+                    <td><strong>152</strong></td>
+                    <td>88%</td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                </tr>
+            `;
+
+            // Populate readmission table
+            const readmissionTableBody = document.getElementById('readmissionTableBody');
+            readmissionTableBody.innerHTML = `
+                <tr>
+                    <td>Patient 1</td>
+                    <td><strong>78%</strong></td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fadbd8; color: #e74c3c; font-weight: 600;">HIGH</span></td>
+                </tr>
+                <tr>
+                    <td>Patient 2</td>
+                    <td><strong>65%</strong></td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #fdebd0; color: #f39c12; font-weight: 600;">MEDIUM</span></td>
+                </tr>
+                <tr>
+                    <td>Patient 3</td>
+                    <td><strong>42%</strong></td>
+                    <td><span style="padding: 4px 8px; border-radius: 4px; background-color: #d5f4e6; color: #27ae60; font-weight: 600;">LOW</span></td>
+                </tr>
+            `;
+        }
+
+        function showTab(tabName) {
+            const tabs = ['overviewTab', 'admissionsTab', 'alertsTab', 'readmissionTab', 'departmentsTab'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).classList.remove('show');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('show');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // ========================================
+        // BED MANAGEMENT
+        // ========================================
         function loadBeds() {
             appState.allBeds = mockBeds;
             appState.beds = mockBeds;
@@ -1609,30 +2632,27 @@
             } else {
                 beds.forEach(bed => {
                     const bedCard = document.createElement('div');
-                    bedCard.className = `bed-card ${bed.status.toLowerCase()}`;
+                    bedCard.className = `card`;
                     bedCard.innerHTML = `
-                        <div class="bed-header">
-                            <h3>Bed ${bed.bed_number}</h3>
-                            <span class="status-badge ${bed.status.toLowerCase()}">${bed.status}</span>
+                        <div style="background: linear-gradient(135deg, var(--primary-color) 0%, #156c5a 100%); color: white; padding: var(--spacing-lg); border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="margin: 0; color: white;">Bed ${bed.bed_number}</h4>
+                            <span class="status-badge" style="background-color: ${bed.status === 'AVAILABLE' ? 'var(--success-color)' : 'var(--danger-color)'}; padding: 4px 12px; border-radius: 4px; font-size: var(--font-sm);">${bed.status}</span>
                         </div>
-                        <div class="bed-details">
-                            <div class="detail-row">
-                                <span class="label">Ward:</span>
+                        <div style="padding: var(--spacing-lg);">
+                            <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; font-size: var(--font-sm); border-bottom: 1px solid var(--border-color);">
+                                <span style="font-weight: 600; color: var(--primary-color);">Ward:</span>
                                 <span>${bed.ward}</span>
                             </div>
                             ${bed.patient_name ? `
-                                <div class="detail-row">
-                                    <span class="label">Patient:</span>
+                                <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; font-size: var(--font-sm); border-bottom: 1px solid var(--border-color);">
+                                    <span style="font-weight: 600; color: var(--primary-color);">Patient:</span>
                                     <span>${bed.patient_name}</span>
                                 </div>
                             ` : ''}
-                            <div class="detail-row">
-                                <span class="label">Priority:</span>
-                                <span style="padding: 4px 8px; border-radius: 4px; font-weight: 600; ${bed.priority === 'Critical' ? 'background-color: #fee; color: var(--danger-color);' : 'background-color: #efe; color: var(--success-color);'}">${bed.priority}</span>
+                            <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; font-size: var(--font-sm);">
+                                <span style="font-weight: 600; color: var(--primary-color);">Priority:</span>
+                                <span style="padding: 2px 8px; border-radius: 4px; font-weight: 600; ${bed.priority === 'Critical' ? 'background-color: #fee; color: var(--danger-color);' : 'background-color: #efe; color: var(--success-color);'}">${bed.priority}</span>
                             </div>
-                        </div>
-                        <div style="padding: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; gap: var(--spacing-md);">
-                            <button class="btn btn-secondary btn-sm" onclick="alert('Bed details for ${bed.bed_number}')">View Details</button>
                         </div>
                     `;
                     bedsGrid.appendChild(bedCard);
@@ -1654,107 +2674,24 @@
         }
 
         function loadDoctorStats() {
-            const totalPatients = 5;
-            document.getElementById('totalPatients').textContent = totalPatients;
-            document.getElementById('todayAppointments').textContent = appState.appointments.filter(apt => apt.status === 'SCHEDULED').length;
-            document.getElementById('completedAppointments').textContent = appState.appointments.filter(apt => apt.status === 'COMPLETED').length;
-        }
+            const totalPatients = appState.appointments.length;
+            const todayAppointments = appState.appointments.filter(apt => apt.status === 'SCHEDULED').length;
+            const completedAppointments = appState.appointments.filter(apt => apt.status === 'COMPLETED').length;
+            const pendingUploads = appState.appointments.filter(apt => apt.status === 'COMPLETED' && !apt.report_uploaded).length;
 
-        function loadAIData() {
-            // AI data is pre-populated in HTML
-        }
-
-        // ========================================
-        // FORM HANDLERS
-        // ========================================
-        function handleBookAppointment(e) {
-            e.preventDefault();
-            const doctorId = document.getElementById('selectDoctor').value;
-            const appointmentDate = document.getElementById('appointmentDate').value;
-            const appointmentTime = document.getElementById('appointmentTime').value;
-            const reason = document.getElementById('appointmentReason').value;
-
-            if (!doctorId || !appointmentDate || !appointmentTime || !reason) {
-                document.getElementById('bookAppointmentError').textContent = '❌ Please fill all fields';
-                document.getElementById('bookAppointmentError').classList.add('show');
-                return;
-            }
-
-            const doctor = mockDoctors.find(d => d.id == doctorId);
-            const appointment = {
-                id: Math.floor(Math.random() * 1000),
-                doctor_name: `Dr. ${doctor.name}`,
-                patient_name: appState.currentUser.name,
-                appointment_date: `${appointmentDate} ${appointmentTime}:00`,
-                status: 'SCHEDULED',
-                reason: reason
-            };
-
-            appState.appointments.push(appointment);
-            alert('✅ Appointment booked successfully!');
-            document.getElementById('bookAppointmentError').classList.remove('show');
-            document.getElementById('selectDoctor').value = '';
-            document.getElementById('appointmentDate').value = '';
-            document.getElementById('appointmentTime').value = '';
-            document.getElementById('appointmentReason').value = '';
-            showPage('appointments');
-        }
-
-        function handleUpdateProfile(e) {
-            e.preventDefault();
-            alert('✅ Profile updated successfully!');
-        }
-
-        function cancelAppointment(id) {
-            if (confirm('Are you sure you want to cancel this appointment?')) {
-                const apt = appState.appointments.find(a => a.id === id);
-                if (apt) {
-                    apt.status = 'CANCELLED';
-                    alert('✅ Appointment cancelled');
-                    loadAppointments();
-                }
-            }
-        }
-
-        function filterAppointments(status) {
-            const appointmentsList = document.getElementById('appointmentsList');
-            appointmentsList.innerHTML = '';
-
-            let filtered = status === 'all' ? appState.appointments : appState.appointments.filter(apt => apt.status === status);
-
-            if (filtered.length === 0) {
-                appointmentsList.innerHTML = '<p>No appointments found</p>';
-            } else {
-                filtered.forEach(apt => {
-                    const aptDiv = document.createElement('div');
-                    aptDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-md); background-color: var(--light-bg);';
-                    aptDiv.innerHTML = `
-                        <div>
-                            <h4 style="margin: 0 0 var(--spacing-xs) 0;">${apt.doctor_name}</h4>
-                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${new Date(apt.appointment_date).toLocaleString()}</p>
-                            <p style="margin: var(--spacing-xs) 0; font-size: var(--font-sm);">${apt.reason}</p>
-                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; ${apt.status === 'SCHEDULED' ? 'background-color: #3498db; color: white;' : apt.status === 'COMPLETED' ? 'background-color: #27ae60; color: white;' : 'background-color: #e74c3c; color: white;'} font-weight: 600; font-size: var(--font-sm);">${apt.status}</span>
-                        </div>
-                        ${apt.status === 'SCHEDULED' ? `<button class="btn btn-danger btn-sm" onclick="cancelAppointment(${apt.id})">Cancel</button>` : ''}
-                    `;
-                    appointmentsList.appendChild(aptDiv);
-                });
+            if (document.getElementById('totalPatients')) {
+                document.getElementById('totalPatients').textContent = totalPatients;
+                document.getElementById('todayAppointments').textContent = todayAppointments;
+                document.getElementById('completedAppointments').textContent = completedAppointments;
+                document.getElementById('pendingUploads').textContent = pendingUploads;
             }
         }
 
         // ========================================
-        // TAB FUNCTIONS
+        // MODAL FUNCTIONS
         // ========================================
-        function showTab(tabName) {
-            const tabs = ['overviewTab', 'admissionsTab', 'alertsTab', 'readmissionTab', 'departmentsTab'];
-            tabs.forEach(tab => {
-                document.getElementById(tab).classList.remove('show');
-            });
-            document.getElementById(tabName + 'Tab').classList.add('show');
-
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
         }
 
         // ========================================
@@ -1768,6 +2705,17 @@
                 showMainContent();
             }
         });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = ['appointmentModal', 'uploadReportModal', 'rescheduleModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        };
     </script>
 </body>
 </html>
